@@ -54,6 +54,7 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
+import UserApi from '@/api/user'
 
 export default {
   name: 'Login',
@@ -106,6 +107,13 @@ export default {
       })
     },
     handleLogin() {
+      UserApi.login({
+        account: 'admin',
+        pwd: '123123'
+      }).then(res => {
+        console.log(res)
+      })
+
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
