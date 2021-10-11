@@ -107,22 +107,19 @@ export default {
       })
     },
     handleLogin() {
-      UserApi.login({
-        account: 'admin',
-        pwd: '123123'
-      }).then(res => {
-        console.log(res)
-      })
+      
 
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
-            this.loading = false
-          }).catch(() => {
-            this.loading = false
+          UserApi.login({
+            account: 'admin',
+            pwd: '123123'
+          }).then(res => {
+            console.log(res)
           })
+          this.$router.push({ path: this.redirect || '/' })
+          this.loading = false
         } else {
           console.log('error submit!!')
           return false

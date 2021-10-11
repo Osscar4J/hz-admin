@@ -3,7 +3,7 @@ import request from '@/utils/request'
 export default {
   login(data) {
     return request({
-      url: '/vue-admin-template/user/login',
+      url: '/auth/api/auth/login',
       method: 'post',
       data
     })
