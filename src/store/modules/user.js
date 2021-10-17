@@ -47,17 +47,17 @@ const actions = {
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       UserApi.getInfo(state.token).then(response => {
-        const { data } = response
+        const { content } = response
 
-        if (!data) {
+        if (!content) {
           return reject('Verification failed, please Login again.')
         }
 
-        const { name, avatar } = data
+        const { name, avatar } = content
 
         commit('SET_NAME', name)
         commit('SET_AVATAR', avatar)
-        resolve(data)
+        resolve(content)
       }).catch(error => {
         reject(error)
       })

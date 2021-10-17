@@ -9,18 +9,17 @@ export default {
     })
   },
 
-  getInfo(token) {
+  getInfo() {
     return request({
-      url: '/vue-admin-template/user/info',
-      method: 'get',
-      params: { token }
+      url: '/admin/api/user/info',
+      method: 'get'
     })
   },
 
   logout() {
     return request({
-      url: '/vue-admin-template/user/logout',
-      method: 'post'
+      url: '/admin/api/user/logout',
+      method: 'delete'
     })
   }
 }
