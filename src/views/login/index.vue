@@ -11,10 +11,10 @@
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="username"
-          v-model="loginForm.username"
+          ref="account"
+          v-model="loginForm.account"
           placeholder="Username"
-          name="username"
+          name="account"
           type="text"
           tabindex="1"
           auto-complete="on"
@@ -43,25 +43,19 @@
 
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
 
-      <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
-      </div>
-
     </el-form>
   </div>
 </template>
 
 <script>
 import { validUsername } from '@/utils/validate'
-import UserApi from '@/api/user'
 
 export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
       if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
+        callback(new Error('请输入正确的账号'))
       } else {
         callback()
       }
@@ -75,11 +69,11 @@ export default {
     }
     return {
       loginForm: {
-        username: 'admin',
+        account: 'admin',
         password: '111111'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
+        account: [{ required: true, trigger: 'blur', validator: validateUsername }],
         password: [{ required: true, trigger: 'blur', validator: validatePassword }]
       },
       loading: false,
@@ -107,19 +101,17 @@ export default {
       })
     },
     handleLogin() {
-      
-
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          UserApi.login({
-            account: 'admin',
-            pwd: '123123'
-          }).then(res => {
-            console.log(res)
-          })
-          this.$router.push({ path: this.redirect || '/' })
-          this.loading = false
+          this.$store.dispatch('user/login', {
+            account: this.loginForm.account,
+            pwd: this.$md5(this.loginForm.password),
+            type: 1
+          }).then(() => {
+            this.$router.push({ path: this.redirect || '/' })
+            this.loading = false
+          }).catch(() => { this.loading = false })
         } else {
           console.log('error submit!!')
           return false
