@@ -17,7 +17,13 @@ import '@/permission' // permission control
 
 import md5 from 'js-md5'
 
+import initJs from '@/utils/init'
+import globalJs from '@/utils/global'
+
 Vue.prototype.$md5 = md5
+
+Vue.use(globalJs)
+initJs()
 
 /**
  * If you don't want to use mock-server

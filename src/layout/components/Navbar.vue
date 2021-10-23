@@ -12,10 +12,11 @@
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
-            <el-dropdown-item>
-              Home
-            </el-dropdown-item>
+            <el-dropdown-item> 控制台 </el-dropdown-item>
           </router-link>
+          <a @click="passwordFormVisible = true">
+            <el-dropdown-item> 修改密码 </el-dropdown-item>
+          </a>
           <!-- <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
             <el-dropdown-item>Github</el-dropdown-item>
           </a>
@@ -23,11 +24,29 @@
             <el-dropdown-item>Docs</el-dropdown-item>
           </a> -->
           <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">Log Out</span>
+            <span style="display:block;">退出</span>
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+
+    <el-dialog title="修改密码" :visible.sync="passwordFormVisible" width="500px">
+      <el-form :model="form">
+        <el-form-item label="请输入旧密码" class="margin-rm-bottom">
+          <el-input type="password" v-model="form.oldPwd" autocomplete="off" maxlength="18"></el-input>
+        </el-form-item>
+        <el-form-item label="请输入新密码" class="margin-rm-bottom">
+          <el-input type="password" v-model="form.newPwd" autocomplete="off" maxlength="18"></el-input>
+        </el-form-item>
+        <el-form-item label="重复新密码" class="margin-rm-bottom">
+          <el-input type="password" v-model="reNewPwd" autocomplete="off" maxlength="18"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="passwordFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="resetPassword">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -38,6 +57,16 @@ import Hamburger from '@/components/Hamburger'
 import defaultAvatar from '@/assets/images/avatar.jpg'
 
 export default {
+  data() {
+    return {
+      passwordFormVisible: false,
+      reNewPwd: '',
+      form: {
+        oldPwd: '',
+        newPwd: ''
+      }
+    }
+  },
   components: {
     Breadcrumb,
     Hamburger
@@ -61,6 +90,10 @@ export default {
     async logout() {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+    },
+    resetPassword() {
+      this.passwordFormVisible = false
+      
     }
   }
 }

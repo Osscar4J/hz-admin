@@ -1,6 +1,8 @@
 <template>
   <div class="dashboard-container">
     <div class="dashboard-text">name: {{ name }}</div>
+
+    <el-empty description="描述文字"></el-empty>
   </div>
 </template>
 
@@ -13,6 +15,9 @@ export default {
     ...mapGetters([
       'name'
     ])
+  },
+  mounted() {
+    this.$toast('hello world')
   }
 }
 </script>
