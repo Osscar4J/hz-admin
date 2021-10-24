@@ -31,14 +31,14 @@
     </div>
 
     <el-dialog title="修改密码" :visible.sync="passwordFormVisible" width="500px">
-      <el-form :model="form">
-        <el-form-item label="请输入旧密码" class="margin-rm-bottom">
+      <el-form :model="form" :rules="formRules" ref="form">
+        <el-form-item label="请输入旧密码" prop="oldPwd">
           <el-input type="password" v-model="form.oldPwd" autocomplete="off" maxlength="18"></el-input>
         </el-form-item>
-        <el-form-item label="请输入新密码" class="margin-rm-bottom">
+        <el-form-item label="请输入新密码" prop="newPwd">
           <el-input type="password" v-model="form.newPwd" autocomplete="off" maxlength="18"></el-input>
         </el-form-item>
-        <el-form-item label="重复新密码" class="margin-rm-bottom">
+        <el-form-item label="重复新密码" prop="reNewPwdRule">
           <el-input type="password" v-model="reNewPwd" autocomplete="off" maxlength="18"></el-input>
         </el-form-item>
       </el-form>
@@ -55,15 +55,38 @@ import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
 import defaultAvatar from '@/assets/images/avatar.jpg'
+import UserApi from '@/api/user'
 
 export default {
   data() {
+    const validatePwd = (rule, value, callback) => {
+      if (!value) {
+        callback(new Error('请输入密码'))
+      } else if (value.length < 6) {
+        callback(new Error('密码长度不能小于6位'))
+      } else {
+        callback()
+      }
+    }
+    const validateRePwd = (rule, value, callback) => {
+      if (this.reNewPwd != this.form.newPwd){
+        callback(new Error('两次密码输入不一致'))
+      } else {
+        callback()
+      }
+    }
+
     return {
       passwordFormVisible: false,
       reNewPwd: '',
       form: {
         oldPwd: '',
         newPwd: ''
+      },
+      formRules: {
+        oldPwd: [{ required: true, trigger: 'blur', validator: validatePwd }],
+        newPwd: [{ required: true, trigger: 'blur', validator: validatePwd }],
+        reNewPwdRule: [{ required: true, trigger: 'blur', validator: validateRePwd }]
       }
     }
   },
@@ -91,9 +114,21 @@ export default {
       await this.$store.dispatch('user/logout')
       this.$router.push(`/login?redirect=${this.$route.fullPath}`)
     },
-    resetPassword() {
-      this.passwordFormVisible = false
-      
+    async resetPassword() {
+      this.$refs.form.validate( async valid => {
+        if (valid) {
+          let res = await UserApi.updatePassword({
+            newPwd: this.$md5(this.form.newPwd),
+            oldPwd: this.$md5(this.form.oldPwd)
+          })
+          if (res.code == 0) {
+            this.$message.success('修改成功')
+            this.passwordFormVisible = false
+          } else {
+            this.$message.error(res.msg)
+          }
+        }
+      })
     }
   }
 }

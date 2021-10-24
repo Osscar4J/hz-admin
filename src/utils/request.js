@@ -1,10 +1,10 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import { getToken, setToken, getTokenExpired, setTokenExpired } from '@/utils/auth'
+import { getToken, setToken, getTokenExpired } from '@/utils/auth'
 
 const refreshToken = function() {
-  return request({
+  return service({
     url: '/auth/api/auth/refreshToken',
     method: 'get',
     headers: {
@@ -85,7 +85,7 @@ service.interceptors.response.use(
           })
         })
       }
-      return Promise.reject(new Error(res.msg || res.message || 'Error'))
+      return Promise.reject(res.msg || res.message || 'Error')
     } else {
       return res
     }

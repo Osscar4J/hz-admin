@@ -11,5 +11,25 @@ export default {
                 })
             }
         }
+
+        if (!Vue.prototype.$message){
+            Vue.prototype.$message = {
+                success: msg => {
+                    Message({
+                        message: msg,
+                        type: 'success',
+                        duration: 3500
+                    })
+                },
+
+                error: msg => {
+                    Message({
+                        message: msg,
+                        type: 'error',
+                        duration: 3500
+                    })
+                }
+            }
+        }
 	}
 }

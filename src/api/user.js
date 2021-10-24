@@ -9,6 +9,14 @@ export default {
     })
   },
 
+  updatePassword(data) {
+    return request({
+      url: '/auth/api/account/updatePassword',
+      method: 'put',
+      data
+    })
+  },
+
   getInfo() {
     return request({
       url: '/admin/api/user/info',
