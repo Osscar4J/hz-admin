@@ -85,7 +85,7 @@ service.interceptors.response.use(
           })
         })
       }
-      return Promise.reject(res.msg || res.message || 'Error')
+      return res // Promise.reject(res.msg || res.message || 'Error')
     } else {
       return res
     }

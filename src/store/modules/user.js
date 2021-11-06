@@ -6,7 +6,8 @@ const getDefaultState = () => {
   return {
     token: getToken(),
     name: '',
-    avatar: ''
+    avatar: '',
+    menus: []
   }
 }
 
@@ -24,6 +25,9 @@ const mutations = {
   },
   SET_AVATAR: (state, avatar) => {
     state.avatar = avatar
+  },
+  SET_MENUS: (state, menus) => {
+    state.menus = menus
   }
 }
 
@@ -85,6 +89,17 @@ const actions = {
       removeToken() // must remove  token  first
       commit('RESET_STATE')
       resolve()
+    })
+  },
+
+  resetMenus({ commit }) {
+    return new Promise((resolve, reject) => {
+      UserApi.getInfo().then(res => {
+        if (res.code == 0){
+          commit('SET_MENUS', res.content.menus)
+        }
+        resolve(res)
+      })
     })
   }
 }

@@ -5,6 +5,7 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
+import Store from '@/store'
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -49,12 +50,25 @@ export const constantRoutes = [
     redirect: '/dashboard',
     children: [{
       path: 'dashboard',
-      name: 'Dashboard',
+      name: '控制台',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '控制台', icon: 'dashboard' }
     }]
   },
 
+  // {
+  //   path: 'external-link',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
+  //       meta: { title: 'External Link', icon: 'link' }
+  //     }
+  //   ]
+  // }
+]
+
+const dynamicRouters = [
   {
     path: '/example',
     component: Layout,
@@ -86,6 +100,19 @@ export const constantRoutes = [
         name: 'Form',
         component: () => import('@/views/form/index'),
         meta: { title: 'Form', icon: 'form' }
+      }
+    ]
+  },
+
+  {
+    path: '/users',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: '用户管理',
+        component: () => import('@/views/users/index'),
+        meta: { title: '用户管理', icon: 'form' }
       }
     ]
   },
@@ -147,30 +174,42 @@ export const constantRoutes = [
         meta: { title: 'menu2' }
       }
     ]
-  },
-
-  {
-    path: 'external-link',
-    component: Layout,
-    children: [
-      {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
-      }
-    ]
-  },
-
-  // 404 page must be placed at the end !!!
-  { path: '*', redirect: '/404', hidden: true }
+  }
 ]
 
 const createRouter = () => new Router({
-  // mode: 'history', // require service support
+  mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
   routes: constantRoutes
 })
 
 const router = createRouter()
+
+const commonPaths = ['/', '/login', '/logout']
+
+let getRouter
+router.beforeEach(async (to, from, next) => {
+  if (!getRouter && !commonPaths.includes(to.path)) {
+    let res = await Store.dispatch('user/resetMenus')
+    if (res.code != 0){
+      next({ path: '/login' })
+    } else {
+      console.log(Store.getters.menus)
+
+      router.addRoutes(dynamicRouters) // 动态添加路由
+      dynamicRouters.forEach(r => {
+        router.options.routes.push(r)
+      })
+      // 404 page must be placed at the end !!!
+      router.options.routes.push({ path: '*', redirect: '/404', hidden: true })
+      getRouter = true
+      
+      next()
+    }
+  } else {
+    next()
+  }
+})
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
