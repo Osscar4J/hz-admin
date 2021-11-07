@@ -49,6 +49,7 @@
 
 <script>
 import { validUsername } from '@/utils/validate'
+import Store from '@/store'
 
 export default {
   name: 'Login',
@@ -109,7 +110,7 @@ export default {
             pwd: this.$md5(this.loginForm.password),
             type: 1
           }).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
+            this.$router.push({ path: this.redirect || '/dashbord' })
             this.loading = false
           }).catch(() => { this.loading = false })
         } else {

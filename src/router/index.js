@@ -39,17 +39,23 @@ export const constantRoutes = [
   },
 
   {
+    path: '/',
+    component: () => import('@/views/login/index'),
+    hidden: true
+  },
+
+  {
     path: '/404',
     component: () => import('@/views/404'),
     hidden: true
   },
 
   {
-    path: '/',
+    path: '/dashboard',
     component: Layout,
     redirect: '/dashboard',
     children: [{
-      path: 'dashboard',
+      path: '',
       name: '控制台',
       component: () => import('@/views/dashboard/index'),
       meta: { title: '控制台', icon: 'dashboard' }
@@ -69,40 +75,40 @@ export const constantRoutes = [
 ]
 
 const dynamicRouters = [
-  {
-    path: '/example',
-    component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'el-icon-s-help' },
-    children: [
-      {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
-      },
-      {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
-      }
-    ]
-  },
+  // {
+  //   path: '/example',
+  //   component: Layout,
+  //   redirect: '/example/table',
+  //   name: 'Example',
+  //   meta: { title: 'Example', icon: 'el-icon-s-help' },
+  //   children: [
+  //     {
+  //       path: 'table',
+  //       name: 'Table',
+  //       component: () => import('@/views/table/index'),
+  //       meta: { title: 'Table', icon: 'table' }
+  //     },
+  //     {
+  //       path: 'tree',
+  //       name: 'Tree',
+  //       component: () => import('@/views/tree/index'),
+  //       meta: { title: 'Tree', icon: 'tree' }
+  //     }
+  //   ]
+  // },
 
-  {
-    path: '/form',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'Form',
-        component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
-      }
-    ]
-  },
+  // {
+  //   path: '/form',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: 'index',
+  //       name: 'Form',
+  //       component: () => import('@/views/form/index'),
+  //       meta: { title: 'Form', icon: 'form' }
+  //     }
+  //   ]
+  // },
 
   {
     path: '/users',
@@ -113,6 +119,26 @@ const dynamicRouters = [
         name: '用户管理',
         component: () => import('@/views/users/index'),
         meta: { title: '用户管理', icon: 'form' }
+      }
+    ]
+  },
+
+  {
+    path: '/orgs',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: '单位管理',
+        component: () => import('@/views/org/index'),
+        meta: { title: '单位管理', icon: 'form' }
+      },
+      {
+        path: 'editor',
+        name: '编辑',
+        component: () => import('@/views/org/editor'),
+        meta: { title: '修改单位信息', icon: 'form' },
+        hidden: true
       }
     ]
   },
@@ -178,30 +204,32 @@ const dynamicRouters = [
 ]
 
 const createRouter = () => new Router({
-  mode: 'history', // require service support
+  // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
-  routes: constantRoutes
+  routes: constantRoutes.concat(dynamicRouters)
 })
 
 const router = createRouter()
 
-const commonPaths = ['/', '/login', '/logout']
+const commonPaths = ['/', '/login', '/logout', '']
 
 let getRouter
 router.beforeEach(async (to, from, next) => {
   if (!getRouter && !commonPaths.includes(to.path)) {
+    console.log('before get menus')
     let res = await Store.dispatch('user/resetMenus')
+    console.log('menus: ', res)
     if (res.code != 0){
       next({ path: '/login' })
     } else {
       console.log(Store.getters.menus)
 
-      router.addRoutes(dynamicRouters) // 动态添加路由
-      dynamicRouters.forEach(r => {
-        router.options.routes.push(r)
-      })
-      // 404 page must be placed at the end !!!
-      router.options.routes.push({ path: '*', redirect: '/404', hidden: true })
+      // router.addRoutes(dynamicRouters) // 动态添加路由
+      // dynamicRouters.forEach(r => {
+      //   router.options.routes.push(r)
+      // })
+      // // 404 page must be placed at the end !!!
+      // router.options.routes.push({ path: '*', redirect: '/404', hidden: true })
       getRouter = true
       
       next()

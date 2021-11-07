@@ -87,6 +87,12 @@ service.interceptors.response.use(
       }
       return res // Promise.reject(res.msg || res.message || 'Error')
     } else {
+      if (res.content.records){
+        res.content.current = parseInt(res.content.current)
+        res.content.pages = parseInt(res.content.pages)
+        res.content.size = parseInt(res.content.size)
+        res.content.total = parseInt(res.content.total)
+      }
       return res
     }
   },

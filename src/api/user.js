@@ -29,5 +29,13 @@ export default {
       url: '/admin/api/user/logout',
       method: 'delete'
     })
-  }
+  },
+
+  getPage(data) {
+    return request({
+      url: '/admin/api/user',
+      method: 'get',
+      data: data
+    })
+  },
 }
