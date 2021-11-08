@@ -9,6 +9,9 @@ const refreshToken = function() {
     method: 'get',
     headers: {
       refresh: getToken()
+    },
+    success: res => {
+      console.log(res)
     }
   })
 }
@@ -61,7 +64,7 @@ service.interceptors.response.use(
    * Here is just an example
    * You can also judge the status by HTTP Status Code
    */
-  response => {
+  async response => {
     const res = response.data
 
     // if the custom code is not 0, it is judged as an error.
@@ -84,6 +87,8 @@ service.interceptors.response.use(
             location.reload()
           })
         })
+      } else if (res.code == 401) { // 登录失效
+        await refreshToken()
       }
       return res // Promise.reject(res.msg || res.message || 'Error')
     } else {

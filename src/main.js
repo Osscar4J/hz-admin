@@ -20,6 +20,11 @@ import md5 from 'js-md5'
 import initJs from '@/utils/init'
 import globalJs from '@/utils/global'
 
+import preview from 'vue-photo-preview'
+import 'vue-photo-preview/dist/skin.css'
+
+Vue.use(preview)
+
 Vue.prototype.$md5 = md5
 
 Vue.use(globalJs)

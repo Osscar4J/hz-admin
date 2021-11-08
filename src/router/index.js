@@ -53,7 +53,6 @@ export const constantRoutes = [
   {
     path: '/dashboard',
     component: Layout,
-    redirect: '/dashboard',
     children: [{
       path: '',
       name: '控制台',
@@ -62,54 +61,10 @@ export const constantRoutes = [
     }]
   },
 
-  // {
-  //   path: 'external-link',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-  //       meta: { title: 'External Link', icon: 'link' }
-  //     }
-  //   ]
-  // }
+  
 ]
 
 const dynamicRouters = [
-  // {
-  //   path: '/example',
-  //   component: Layout,
-  //   redirect: '/example/table',
-  //   name: 'Example',
-  //   meta: { title: 'Example', icon: 'el-icon-s-help' },
-  //   children: [
-  //     {
-  //       path: 'table',
-  //       name: 'Table',
-  //       component: () => import('@/views/table/index'),
-  //       meta: { title: 'Table', icon: 'table' }
-  //     },
-  //     {
-  //       path: 'tree',
-  //       name: 'Tree',
-  //       component: () => import('@/views/tree/index'),
-  //       meta: { title: 'Tree', icon: 'tree' }
-  //     }
-  //   ]
-  // },
-
-  // {
-  //   path: '/form',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: 'index',
-  //       name: 'Form',
-  //       component: () => import('@/views/form/index'),
-  //       meta: { title: 'Form', icon: 'form' }
-  //     }
-  //   ]
-  // },
-
   {
     path: '/users',
     component: Layout,
@@ -138,6 +93,13 @@ const dynamicRouters = [
         name: '编辑',
         component: () => import('@/views/org/editor'),
         meta: { title: '修改单位信息', icon: 'form' },
+        hidden: true
+      },
+      {
+        path: 'check',
+        name: '审核',
+        component: () => import('@/views/org/check'),
+        meta: { title: '审核单位', icon: 'form' },
         hidden: true
       }
     ]
@@ -200,7 +162,9 @@ const dynamicRouters = [
         meta: { title: 'menu2' }
       }
     ]
-  }
+  },
+
+  { path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({

@@ -1,5 +1,24 @@
 <template>
   <div class="app-container">
+    <div>
+      <el-form :inline="true" :model="reqvo" class="demo-form-inline" onsubmit="return false">
+        <el-form-item label="名称">
+          <el-input v-model="reqvo.name" placeholder="单位名称" maxlength="255"></el-input>
+        </el-form-item>
+        <el-form-item label="认证">
+          <el-select v-model="reqvo.auth" placeholder="选择认证状态" @change="getPage(1)">
+            <el-option label="全部" :value="null" />
+            <el-option label="未认证" :value="0" />
+            <el-option label="单位认证" :value="1" />
+            <el-option label="个人认证" :value="2" />
+          </el-select>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="getPage(1)">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+
     <el-table
       v-loading="dataLoading"
       :data="data.records"
@@ -13,13 +32,13 @@
           {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column align="left" label="管理员">
+      <el-table-column align="left" label="管理员" width="160">
         <template slot-scope="scope">
           <div>姓名：{{ scope.row.manager.name }}</div>
           <div>电话：{{ scope.row.manager.phone }}</div>
         </template>
       </el-table-column>
-      <el-table-column label="是否认证" width="210">
+      <el-table-column label="是否认证" width="140">
         <template slot-scope="scope">
           <span v-if="scope.row.authed == 1" class="color-success">
               已认证
@@ -39,7 +58,7 @@
           <el-tag v-if="scope.row.status == 1">正常</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" width="210" align="center">
+      <el-table-column label="注册时间" width="210" align="center">
         <template slot-scope="scope">
           <span> {{ new Date(scope.row.createTime).Format('yyyy/MM/dd hh:mm') }} </span>
         </template>
@@ -51,7 +70,8 @@
       </el-table-column>
       <el-table-column label="操作" align="left">
         <template slot-scope="scope">
-          <el-button type="text" @click="$router.push('/orgs/editor?id=' + scope.row.id)">编辑</el-button>
+          <el-button type="text" icon="el-icon-edit" @click="$router.push('/orgs/editor?id=' + scope.row.id)">编辑</el-button>
+          <el-button v-if="scope.row.authed == 0" type="text" icon="el-icon-check" @click="$router.push('/orgs/check?id=' + scope.row.id)">审核</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -79,7 +99,8 @@ export default {
     return {
         reqvo: {
             current: 1,
-            size: 6
+            size: 10,
+            auth: null
         },
         data: {},
         dataLoading: true
@@ -93,7 +114,6 @@ export default {
       this.reqvo.current = pageNo || this.reqvo.current
       let res = await OrgAPi.getPage(this.reqvo)
       this.dataLoading = false
-      console.log(res)
       this.data = res.content
     }
   }

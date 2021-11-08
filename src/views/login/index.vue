@@ -110,7 +110,7 @@ export default {
             pwd: this.$md5(this.loginForm.password),
             type: 1
           }).then(() => {
-            this.$router.push({ path: this.redirect || '/dashbord' })
+            this.$router.push({ path: this.redirect || '/dashboard' })
             this.loading = false
           }).catch(() => { this.loading = false })
         } else {
