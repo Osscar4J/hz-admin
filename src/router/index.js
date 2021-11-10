@@ -106,6 +106,19 @@ const dynamicRouters = [
   },
 
   {
+    path: '/parts',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: '配件管理',
+        component: () => import('@/views/parts/index'),
+        meta: { title: '配件管理', icon: 'form' }
+      }
+    ]
+  },
+
+  {
     path: '/nested',
     component: Layout,
     redirect: '/nested/menu1',

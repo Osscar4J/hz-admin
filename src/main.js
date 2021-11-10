@@ -20,10 +20,34 @@ import md5 from 'js-md5'
 import initJs from '@/utils/init'
 import globalJs from '@/utils/global'
 
-import preview from 'vue-photo-preview'
-import 'vue-photo-preview/dist/skin.css'
+// import preview from 'vue-photo-preview'
+// import 'vue-photo-preview/dist/skin.css'
 
-Vue.use(preview)
+// Vue.use(preview)
+
+import Viewer from 'v-viewer'
+import 'viewerjs/dist/viewer.css'
+
+Vue.use(Viewer);
+Viewer.setDefaults({
+  Options: { 
+    "inline": true, 
+    "button": true, 
+    "navbar": true, 
+    "title": true, 
+    "toolbar": false, 
+    "tooltip": true, 
+    "movable": true, 
+    "zoomable": true, 
+    "rotatable": true, 
+    "scalable": true, 
+    "transition": true, 
+    "fullscreen": true, 
+    "keyboard": true, 
+    "url": "data-source"
+  }
+});
+
 
 Vue.prototype.$md5 = md5
 

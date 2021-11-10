@@ -30,4 +30,17 @@ export default {
       data: data
     })
   },
+
+  /**
+   * 审核单位
+   * @param {*} data { status: 1 pass, 2 reject, id: orgId }
+   * @returns 
+   */
+  checkOrgAuth(data) {
+    return request({
+      url: '/admin/api/org/checkOrgAuth',
+      method: 'put',
+      data: data
+    })
+  },
 }

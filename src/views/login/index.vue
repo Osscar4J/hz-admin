@@ -111,7 +111,6 @@ export default {
             type: 1
           }).then(() => {
             this.$router.push({ path: this.redirect || '/dashboard' })
-            this.loading = false
           }).catch(() => { this.loading = false })
         } else {
           console.log('error submit!!')
