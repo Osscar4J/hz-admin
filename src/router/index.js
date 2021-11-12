@@ -119,6 +119,41 @@ const dynamicRouters = [
   },
 
   {
+    path: '/system',
+    component: Layout,
+    redirect: '/system/banners',
+    name: 'System',
+    meta: {
+      title: '系统管理',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'banners',
+        component: () => import('@/views/system/banner/layout'),
+        name: 'Banners',
+        meta: { title: '轮播图' },
+        children: [
+          {
+            path: '',
+            component: () => import('@/views/system/banner/index'),
+            name: 'bannerIndex',
+            meta: { title: '轮播图' },
+            hidden: true
+          },
+          {
+            path: 'editor',
+            component: () => import('@/views/system/banner/editor'),
+            name: 'bannerEditor',
+            meta: { title: '修改轮播图' },
+            hidden: true
+          }
+        ]
+      }
+    ]
+  },
+
+  {
     path: '/nested',
     component: Layout,
     redirect: '/nested/menu1',
@@ -138,27 +173,7 @@ const dynamicRouters = [
             path: 'menu1-1',
             component: () => import('@/views/nested/menu1/menu1-1'),
             name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
+            meta: { title: 'Menu1-1' },
           },
           {
             path: 'menu1-3',
@@ -192,6 +207,7 @@ const commonPaths = ['/', '/login', '/logout', '']
 
 let getRouter
 router.beforeEach(async (to, from, next) => {
+  
   if (!getRouter && !commonPaths.includes(to.path)) {
     console.log('before get menus')
     let res = await Store.dispatch('user/resetMenus')

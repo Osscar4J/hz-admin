@@ -1,16 +1,22 @@
 import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
-import { getToken, setToken, getTokenExpired } from '@/utils/auth'
+import { getToken, setToken, getRefreshToken, getTokenExpired, removeToken, removeRefreshToken } from '@/utils/auth'
+import router from '@/router'
 
 const refreshToken = function() {
   return service({
     url: '/auth/api/auth/refreshToken',
     method: 'get',
     headers: {
-      refresh: getToken()
+      refresh: getRefreshToken()
     },
     success: res => {
+      if (res.code == 401) {
+        removeToken()
+        removeRefreshToken()
+        router.push('/')
+      }
       console.log(res)
     }
   })
@@ -21,7 +27,7 @@ const interceptor = async function(config) {
     // let each request carry token
     // ['X-Token'] is a custom headers key
     // please modify it according to the actual situation
-    config.headers['X-Token'] = getToken()
+    config.headers['X-Token'] = store.getters.token || getToken()
 
     if (!config.url.match(/\/auth\/api\/auth\/login/)) {
       const expire = getTokenExpired()
@@ -30,6 +36,9 @@ const interceptor = async function(config) {
         const res = await refreshToken()
         setToken(res.content)
       }
+    }
+    if (config.url.match(/^\/api\//)) {
+      config.url = '/admin' + config.url
     }
   }
   return config
