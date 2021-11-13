@@ -1,19 +1,6 @@
 <template>
   <div class="app-container">
     <el-form ref="form" :model="entity" label-width="120px">
-      <el-form-item label="封面" required>
-        <el-upload
-          class="avatar-uploader"
-          action=""
-          :show-file-list="false"
-          :before-upload="beforeAvatarUpload">
-          <img v-if="entity.cover" :src="entity.cover" class="cover">
-          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
-        </el-upload>
-        <div>
-          <el-progress v-show="percentage > 0 && percentage < 100" :stroke-width="16" :text-inside="true" :percentage="percentage"></el-progress>
-        </div>
-      </el-form-item>
       <el-form-item label="名称" required>
         <el-input v-model="entity.name" maxlength="255" />
       </el-form-item>
@@ -24,11 +11,9 @@
           :active-value="1" 
           :inactive-value="0"></el-switch>
       </el-form-item>
-      <el-form-item label="位置" required>
-        <el-select v-model="entity.pos" placeholder="选择位置">
-            <el-option label="全部" :value="null" />
-            <el-option label="开机广告" value="WELCOM" />
-            <el-option label="首页" value="HOME" />
+      <el-form-item label="类型" required>
+        <el-select v-model="entity.type" placeholder="选择类型">
+            <el-option label="配件" :value="1" />
           </el-select>
       </el-form-item>
       <el-form-item label="排序">
@@ -44,16 +29,16 @@
 </template>
 
 <script>
-import BannerApi from '@/api/banner'
-import FileApi from '@/api/file'
-import Constants from '@/constants'
+import ClassifyApi from '@/api/classify'
 
 export default {
-  name: 'bannerEditor',
+  name: 'classifyEditor',
   data() {
     return {
         entity: {
-          pos: 'HOME'
+          type: 1,
+          sortNo: 1,
+          status: 0
         },
         percentage: 0
     }
@@ -61,7 +46,7 @@ export default {
   mounted() {
     let id = this.$route.query.id
     if (id) {
-      BannerApi.getInfo(id).then(res => {
+      ClassifyApi.getInfo(id).then(res => {
         this.entity = res.content
       })
     }
@@ -72,39 +57,13 @@ export default {
     },
 
     async onSubmit() {
-      if (!this.entity.cover) {
-        this.$message.error('请上传图片')
-        return false
-      }
-      let res = await BannerApi.saveOrUpdate(this.entity)
+      let res = await ClassifyApi.saveOrUpdate(this.entity)
       if (res.code == 0){
         this.$message.success('修改成功')
         this.onCancel()
       } else {
         this.$message.error(res.msg)
       }
-    },
-
-    beforeAvatarUpload(e) {
-      let fileUrl = 'banners/'+new Date().getTime() + e.name.substr(e.name.indexOf('.'))
-      FileApi.upload({
-        filename: fileUrl,
-        file: e,
-        progress: async (n) => {
-          this.percentage = parseInt(n * 100)
-          if (this.percentage >= 100) {
-            setTimeout(async () => {
-              await FileApi.publicRead(fileUrl)
-              if (this.entity.cover) {
-                FileApi.deleteFile(this.entity.cover)
-              }
-              this.$set(this.entity, 'cover', Constants.OSS_URL + fileUrl)
-            }, 100)
-          }
-        }
-      })
-
-      return false
     }
   }
 }

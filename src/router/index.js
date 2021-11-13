@@ -132,13 +132,13 @@ const dynamicRouters = [
         path: 'banners',
         component: () => import('@/views/system/banner/layout'),
         name: 'Banners',
-        meta: { title: '轮播图' },
+        meta: { title: '轮播图管理' },
         children: [
           {
             path: '',
             component: () => import('@/views/system/banner/index'),
             name: 'bannerIndex',
-            meta: { title: '轮播图' },
+            meta: { title: '轮播图列表' },
             hidden: true
           },
           {
@@ -146,6 +146,50 @@ const dynamicRouters = [
             component: () => import('@/views/system/banner/editor'),
             name: 'bannerEditor',
             meta: { title: '修改轮播图' },
+            hidden: true
+          }
+        ]
+      },
+      {
+        path: 'classify',
+        component: () => import('@/views/system/classify/layout'),
+        name: 'Classify',
+        meta: { title: '分类管理' },
+        children: [
+          {
+            path: '',
+            component: () => import('@/views/system/classify/index'),
+            name: 'classifyIndex',
+            meta: { title: '分类列表' },
+            hidden: true
+          },
+          {
+            path: 'editor',
+            component: () => import('@/views/system/classify/editor'),
+            name: 'classifyEditor',
+            meta: { title: '修改分类' },
+            hidden: true
+          }
+        ]
+      },
+      {
+        path: 'area',
+        component: () => import('@/views/system/area/layout'),
+        name: 'area',
+        meta: { title: '区域管理' },
+        children: [
+          {
+            path: '',
+            component: () => import('@/views/system/area/index'),
+            name: 'areaIndex',
+            meta: { title: '区域列表' },
+            hidden: true
+          },
+          {
+            path: 'editor',
+            component: () => import('@/views/system/area/editor'),
+            name: 'areaEditor',
+            meta: { title: '修改区域' },
             hidden: true
           }
         ]
