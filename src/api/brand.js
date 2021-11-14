@@ -1,6 +1,6 @@
 import request from '@/utils/request'
 
-const baseApi = '/admin/api/parts'
+const baseApi = '/api/brand'
 
 export default {
   getPage(data) {

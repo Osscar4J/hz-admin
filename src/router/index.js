@@ -145,7 +145,7 @@ const dynamicRouters = [
             path: 'editor',
             component: () => import('@/views/system/banner/editor'),
             name: 'bannerEditor',
-            meta: { title: '修改轮播图' },
+            meta: { title: '编辑轮播图' },
             hidden: true
           }
         ]
@@ -167,7 +167,7 @@ const dynamicRouters = [
             path: 'editor',
             component: () => import('@/views/system/classify/editor'),
             name: 'classifyEditor',
-            meta: { title: '修改分类' },
+            meta: { title: '编辑分类' },
             hidden: true
           }
         ]
@@ -189,7 +189,64 @@ const dynamicRouters = [
             path: 'editor',
             component: () => import('@/views/system/area/editor'),
             name: 'areaEditor',
-            meta: { title: '修改区域' },
+            meta: { title: '编辑区域' },
+            hidden: true
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    path: '/device',
+    component: Layout,
+    redirect: '/device/device',
+    name: 'Device',
+    meta: {
+      title: '设备管理',
+      icon: 'nested'
+    },
+    children: [
+      {
+        path: 'device',
+        component: () => import('@/views/device/device/layout'),
+        name: 'Devices',
+        meta: { title: '设备管理' },
+        children: [
+          {
+            path: '',
+            component: () => import('@/views/device/device/index'),
+            name: 'deviceIndex',
+            meta: { title: '设备列表' },
+            hidden: true
+          },
+          {
+            path: 'editor',
+            component: () => import('@/views/device/device/editor'),
+            name: 'deviceEditor',
+            meta: { title: '编辑设备' },
+            hidden: true
+          }
+        ]
+      },
+      {
+        path: 'parts',
+        component: () => import('@/views/device/parts/layout'),
+        name: 'Parts',
+        meta: { title: '配件管理' },
+        children: [
+          {
+            path: '',
+            component: () => import('@/views/device/parts/index'),
+            name: 'partsIndex',
+            meta: { title: '配件列表' },
+            hidden: true
+          },
+          {
+            path: 'editor',
+            component: () => import('@/views/device/parts/editor'),
+            name: 'partsEditor',
+            meta: { title: '编辑配件' },
             hidden: true
           }
         ]

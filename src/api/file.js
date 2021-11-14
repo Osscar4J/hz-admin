@@ -38,7 +38,7 @@ export default {
       partSize: params.partSize || 100 * 1024
     };
 
-    this.getClient(client => {
+    this.getClient().then(client => {
       client.multipartUpload(key, params.file, options).then( (res) => {
         typeof params.success === 'function' && params.success(res)
       }).catch((err) => {
@@ -47,21 +47,23 @@ export default {
         } else {
           console.error(err);
         }
-      });
+      })
     })
   },
   
-  publicRead(filepath) {
+  async publicRead(filepath) {
+    await this.getClient()
     return OSSClient.putACL(filepath, 'public-read')
   },
 
-  deleteFile(filepath) {
+  async deleteFile(filepath) {
+    await this.getClient()
     return OSSClient.delete(filepath.replace(Constants.OSS_URL, ''));
   },
 
-  getClient(callback) {
+  getClient() {
 		if (!OSSClient || new Date().getTime()/1000-getTokenTime > EXPIRED) {
-			this.getSts().then(res => {
+			return this.getSts().then(res => {
         getTokenTime = new Date().getTime()/1000
         STSToken = res.content
         OSSClient = new OSS({
@@ -71,10 +73,11 @@ export default {
           stsToken: res.content.securityToken,
           bucket: BUCKET
         });
-        typeof callback === 'function' && callback(OSSClient)
       })
 		} else {
-			typeof callback === 'function' && callback(OSSClient)
+      return new Promise((resolve, reject) => {
+        resolve(OSSClient)
+      })
 		}
 	},
 }
