@@ -163,20 +163,20 @@ const dynamicRouters = [
         path: 'area',
         component: () => import('@/views/system/area/layout'),
         name: 'area',
-        meta: { title: '区域管理' },
+        meta: { title: '维修站管理' },
         children: [
           {
             path: '',
             component: () => import('@/views/system/area/index'),
             name: 'areaIndex',
-            meta: { title: '区域列表' },
+            meta: { title: '维修站列表' },
             hidden: true
           },
           {
             path: 'editor',
             component: () => import('@/views/system/area/editor'),
             name: 'areaEditor',
-            meta: { title: '编辑区域' },
+            meta: { title: '编辑维修站' },
             hidden: true
           }
         ]
@@ -235,9 +235,38 @@ const dynamicRouters = [
             name: 'partsEditor',
             meta: { title: '编辑配件' },
             hidden: true
+          },
+          {
+            path: 'sku',
+            component: () => import('@/views/device/parts/sku'),
+            name: 'partsSku',
+            meta: { title: '库存管理' },
+            hidden: true
           }
         ]
-      }
+      },
+      {
+        path: 'brand',
+        component: () => import('@/views/device/brand/layout'),
+        name: 'Brands',
+        meta: { title: '品牌管理' },
+        children: [
+          {
+            path: '',
+            component: () => import('@/views/device/brand/index'),
+            name: 'brandIndex',
+            meta: { title: '品牌列表' },
+            hidden: true
+          },
+          {
+            path: 'editor',
+            component: () => import('@/views/device/brand/editor'),
+            name: 'brandEditor',
+            meta: { title: '编辑品牌' },
+            hidden: true
+          }
+        ]
+      },
     ]
   },
 

@@ -32,13 +32,11 @@
       </el-form-item>
       <el-form-item label="所属分类" required>
         <el-select v-model="entity.classifyId" placeholder="选择分类">
-          <el-option label="无" :value="null" />
           <el-option v-for="item in classifies" :label="item.name" :value="item.id" :key="item.id" />
         </el-select>
       </el-form-item>
       <el-form-item label="品牌" required>
         <el-select v-model="selectedBrands" multiple placeholder="选择品牌">
-          <el-option label="无" :value="null" />
           <el-option v-for="item in brands" :label="item.name" :value="item.id" :key="item.id" />
         </el-select>
       </el-form-item>

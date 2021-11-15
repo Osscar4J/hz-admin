@@ -23,9 +23,9 @@
       </el-form-item>
       <el-form-item label="结账周期">
         <el-radio-group v-model="entity.accountPeriod">
-          <el-radio label="一个月" :value="1" />
-          <el-radio label="三个月" :value="3" />
-          <el-radio label="半年" :value="6" />
+          <el-radio :label="1" > 1个月 </el-radio>
+          <el-radio :label="3" > 3个月 </el-radio>
+          <el-radio :label="6" > 半年 </el-radio>
         </el-radio-group>
       </el-form-item>
       <el-form-item label="认证">
@@ -37,6 +37,11 @@
       </el-form-item>
       <el-form-item label="注册时间">
         <div>{{ new Date(entity.createTime).Format('yyyy/MM/dd hh:mm') }}</div>
+      </el-form-item>
+      <el-form-item label="维修站" required>
+        <el-select v-model="entity.groupId" placeholder="选择维修站">
+          <el-option v-for="item in groups" :label="item.name" :value="item.id" :key="item.id" />
+        </el-select>
       </el-form-item>
       <el-form-item label="管理员">
         <div v-if="entity.manager">
@@ -55,18 +60,21 @@
 
 <script>
 import OrgAPi from '@/api/org'
+import GroupApi from '@/api/group'
 
 export default {
   name: 'orgEditor',
   data() {
     return {
-        entity: {}
+        entity: {},
+        groups: []
     }
   },
   mounted() {
     OrgAPi.getInfo(this.$route.query.id).then(res => {
       this.entity = res.content
     })
+    this.getGroups()
   },
   methods: {
     onCancel() {
@@ -81,6 +89,15 @@ export default {
       } else {
         this.$message.error(res.msg)
       }
+    },
+
+    getGroups() {
+      GroupApi.getPage({
+        pageable: 0,
+        status: 1
+      }).then(res => {
+        this.groups = res.content.records || []
+      })
     }
   }
 }

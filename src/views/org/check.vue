@@ -29,6 +29,11 @@
       <el-form-item label="注册时间">
         <div>{{ new Date(entity.createTime).Format('yyyy/MM/dd hh:mm') }}</div>
       </el-form-item>
+      <el-form-item label="维修站" required>
+        <el-select v-model="entity.groupId" placeholder="选择维修站">
+          <el-option v-for="item in groups" :label="item.name" :value="item.id" :key="item.id" />
+        </el-select>
+      </el-form-item>
       <el-form-item label="管理员">
         <div v-if="entity.manager">
           <div>姓名：{{entity.manager.name}}</div>
@@ -72,6 +77,7 @@
 <script>
 import OrgAPi from '@/api/org'
 import FileApi from '@/api/file'
+import GroupApi from '@/api/group'
 
 export default {
   name: 'orgChecker',
@@ -102,6 +108,7 @@ export default {
       }
       this.entity = res.content
     })
+    this.getGroups()
   },
   methods: {
     onCancel() {
@@ -120,6 +127,11 @@ export default {
 
     checkAuth(status) {
       if (status == 1) {
+        if (!this.entity.groupId) {
+          this.$message.warning('请选择维修站')
+          return false
+        }
+
         this.$confirm('确定要通过该单位的认证吗？', '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
@@ -156,6 +168,15 @@ export default {
           })
         })
       }
+    },
+
+    getGroups() {
+      GroupApi.getPage({
+        pageable: 0,
+        status: 1
+      }).then(res => {
+        this.groups = res.content.records || []
+      })
     }
   }
 }
