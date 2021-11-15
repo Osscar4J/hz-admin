@@ -1,6 +1,8 @@
 <template>
   <div class="app-container">
-    <div class="text-right" style="margin-bottom:15px;">
+
+    <div class="f-df" style="margin-bottom:15px; line-height:40px;">
+        <div class="f-flex1">{{entity.name}}</div>
         <el-button type="primary" icon="el-icon-plus" @click="addCate">新增类别</el-button>
     </div>
     <el-table
