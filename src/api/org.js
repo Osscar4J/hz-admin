@@ -33,7 +33,7 @@ export default {
 
   /**
    * 审核单位
-   * @param {*} data { status: 1 pass, 2 reject, id: orgId }
+   * @param {*} data { status: 1 pass, 2 reject, id: orgId, groupId: 维修站id }
    * @returns 
    */
   checkOrgAuth(data) {

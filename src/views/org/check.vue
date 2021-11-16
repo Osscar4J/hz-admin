@@ -139,7 +139,8 @@ export default {
         }).then(() => {
           OrgAPi.checkOrgAuth({
             orgId: this.entity.id,
-            status: status
+            status: status,
+            groupId: this.entity.groupId
           }).then(res => {
             if (res.code == 0){
               this.$message.success('审核通过')
