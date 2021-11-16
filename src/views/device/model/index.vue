@@ -2,11 +2,20 @@
   <div class="app-container">
     <div>
       <el-form :inline="true" :model="reqvo" class="demo-form-inline" onsubmit="return false">
+        <el-form-item label="名称" required>
+          <el-input v-model="reqvo.name" maxlength="255" />
+        </el-form-item>
         <el-form-item label="发布状态">
           <el-select v-model="reqvo.status" placeholder="选择发布状态" @change="getPage(1)">
             <el-option label="全部" :value="null" />
             <el-option label="已发布" :value="1" />
             <el-option label="未发布" :value="0" />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="设备">
+          <el-select v-model="reqvo.deviceId" placeholder="选择设备" @change="getPage(1)">
+            <el-option label="全部" :value="null" />
+            <el-option v-for="item in devices" :label="item.name" :value="item.id" :key="item.id" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -16,7 +25,7 @@
     </div>
 
     <div class="text-right" style="margin-bottom:15px;">
-        <el-button type="primary" icon="el-icon-plus" @click="$router.push('/device/device/editor')">新增</el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="$router.push('/device/model/editor')">新增</el-button>
     </div>
     <el-table
       v-loading="dataLoading"
@@ -27,16 +36,19 @@
       highlight-current-row
     >
       <el-table-column align="center" label="名称" prop="name"></el-table-column>
-      <el-table-column class-name="status-col" label="发布状态" align="center">
+      <el-table-column class-name="status-col" label="发布状态" align="center" width="100">
         <template slot-scope="scope">
           <el-switch active-color="#13ce66" v-model="scope.row.status" :active-value="1" :inactive-value="0" @change="updateEntity(scope.row)"></el-switch>
         </template>
       </el-table-column>
-      <el-table-column class-name="status-col" label="品牌" align="center">
+      <el-table-column class-name="status-col" label="设备" align="center">
         <template slot-scope="scope">
-          <div v-if="scope.row.brands">
-            <span>{{scope.row.brands.map(v => v.name).join(' / ')}}</span>
-          </div>
+          <div v-if="scope.row.device"> {{scope.row.device.name}} </div>
+        </template>
+      </el-table-column>
+      <el-table-column class-name="status-col" label="品牌" align="center" width="180">
+        <template slot-scope="scope">
+          <div v-if="scope.row.brand"> {{scope.row.brand.name}} </div>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" align="center">
@@ -51,7 +63,7 @@
       </el-table-column>
       <el-table-column label="操作" align="left">
         <template slot-scope="scope">
-          <el-button type="text" icon="el-icon-edit" @click="$router.push('/device/device/editor?id=' + scope.row.id)">修改</el-button>
+          <el-button type="text" icon="el-icon-edit" @click="$router.push('/device/model/editor?id=' + scope.row.id)">修改</el-button>
           <el-button type="text" class="text-red" icon="el-icon-delete" @click="removeById(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
@@ -72,6 +84,7 @@
 </template>
 
 <script>
+import DeviceModelApi from '@/api/deviceModel'
 import DeviceApi from '@/api/device'
 
 export default {
@@ -84,22 +97,24 @@ export default {
             status: null
         },
         data: {},
+        devices: [],
         dataLoading: true
     }
   },
   mounted() {
     this.getPage(1)
+    this.getDevices()
   },
   methods: {
     async getPage(pageNo) {
       this.reqvo.current = pageNo || this.reqvo.current
-      let res = await DeviceApi.getPage(this.reqvo)
+      let res = await DeviceModelApi.getPage(this.reqvo)
       this.dataLoading = false
       this.data = res.content
     },
 
     updateEntity(entity) {
-        DeviceApi.saveOrUpdate({
+        DeviceModelApi.saveOrUpdate({
             id: entity.id,
             status: entity.status
         }).then(res => {
@@ -117,7 +132,7 @@ export default {
             cancelButtonText: '取消',
             type: 'warning'
         }).then(res => {
-            DeviceApi.removeById(id).then(res => {
+            DeviceModelApi.removeById(id).then(res => {
                 if (res.code == 0) {
                     this.getPage(1)
                     this.$message.success('删除成功')
@@ -126,6 +141,15 @@ export default {
                 }
             })
         })
+    },
+
+    getDevices() {
+      DeviceApi.getPage({
+        pageable: 0,
+        status: 1
+      }).then(res => {
+        this.devices = res.content.records || []
+      })
     }
   }
 }

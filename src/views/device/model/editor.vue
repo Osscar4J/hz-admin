@@ -12,13 +12,21 @@
           :inactive-value="0"></el-switch>
       </el-form-item>
 
+      <el-form-item label="设备" required>
+        <el-select v-model="entity.deviceId" placeholder="选择所属设备">
+          <el-option :value="null" label="无" />
+          <el-option v-for="item in devices" :label="item.name" :value="item.id" :key="item.id" />
+        </el-select>
+      </el-form-item>
+
       <el-form-item label="品牌" required>
-        <el-select v-model="selectedBrands" multiple placeholder="选择品牌">
+        <el-select v-model="entity.brandId" placeholder="选择所属品牌">
+          <el-option :value="null" label="无" />
           <el-option v-for="item in brands" :label="item.name" :value="item.id" :key="item.id" />
         </el-select>
       </el-form-item>
 
-      <el-form-item label="简介" required>
+      <el-form-item label="简介">
         <el-input v-model="entity.description" maxlength="255" type="textarea" />
       </el-form-item>
 
@@ -31,6 +39,7 @@
 </template>
 
 <script>
+import DeviceModelApi from '@/api/deviceModel'
 import DeviceApi from '@/api/device'
 import BrandApi from '@/api/brand'
 
@@ -42,20 +51,18 @@ export default {
           status: 0
         },
         brands: [],
-        selectedBrands: [],
+        devices: [],
     }
   },
   mounted() {
     let id = this.$route.query.id
     if (id) {
-      DeviceApi.getInfo(id).then(res => {
+      DeviceModelApi.getInfo(id).then(res => {
         this.entity = res.content
-        if (this.entity.brands) {
-          this.selectedBrands = this.entity.brands.map(b => b.id)
-        }
       })
     }
     this.getBrands()
+    this.getDevices()
   },
   methods: {
     onCancel() {
@@ -63,14 +70,15 @@ export default {
     },
 
     async onSubmit() {
-      if (this.selectedBrands.length > 0) {
-        this.entity.brands = this.selectedBrands.map(id => {
-          return {
-            id: id
-          }
-        })
+      if (!this.entity.deviceId) {
+        this.$message.warning('请选择所属设备')
+        return false
       }
-      let res = await DeviceApi.saveOrUpdate(this.entity)
+      if (!this.entity.brandId) {
+        this.$message.warning('请选择所属品牌')
+        return false
+      }
+      let res = await DeviceModelApi.saveOrUpdate(this.entity)
       if (res.code == 0){
         this.$message.success('修改成功')
         this.onCancel()
@@ -85,6 +93,15 @@ export default {
         status: 1
       }).then(res => {
         this.brands = res.content.records || []
+      })
+    },
+
+    getDevices() {
+      DeviceApi.getPage({
+        pageable: 0,
+        status: 1
+      }).then(res => {
+        this.devices = res.content.records || []
       })
     }
   }

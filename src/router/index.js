@@ -267,6 +267,28 @@ const dynamicRouters = [
           }
         ]
       },
+      {
+        path: 'model',
+        component: () => import('@/views/device/model/layout'),
+        name: 'models',
+        meta: { title: '型号管理' },
+        children: [
+          {
+            path: '',
+            component: () => import('@/views/device/model/index'),
+            name: 'modelIndex',
+            meta: { title: '型号列表' },
+            hidden: true
+          },
+          {
+            path: 'editor',
+            component: () => import('@/views/device/model/editor'),
+            name: 'modelEditor',
+            meta: { title: '编辑型号' },
+            hidden: true
+          }
+        ]
+      },
     ]
   },
 
