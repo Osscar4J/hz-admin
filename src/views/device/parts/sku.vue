@@ -5,6 +5,13 @@
         <div class="f-flex1">{{entity.name}}</div>
         <el-button type="primary" icon="el-icon-plus" @click="addCate">新增类别</el-button>
     </div>
+    <div>
+        站点：
+        <el-select v-model="groupId" placeholder="选择站点" @change="getSkus()">
+            <el-option label="总部" :value="null" />
+            <el-option v-for="item in groups" :label="item.name" :value="item.id" :key="item.id" />
+        </el-select>
+    </div>
     <el-table
       :data="tableData"
       border
@@ -38,6 +45,10 @@
         </el-table-column>
     </el-table>
 
+    <div class="margin-top text-gray">
+        总计：{{total}}
+    </div>
+
     <el-dialog title="属性" :visible.sync="skuFormVisible" width="500px">
         <el-form :model="sku">
             <el-form-item label="类别" label-width="120px">
@@ -61,6 +72,7 @@
 <script>
 import PartsApi from '@/api/parts'
 import SkuApi from '@/api/sku'
+import GroupApi from '@/api/group'
 
 export default {
   name: 'parts',
@@ -71,6 +83,9 @@ export default {
         skuFormVisible: false,
         parentSku: {},
         sku: {},
+        groupId: null,
+        groups: [], // 站点列表
+        total: 0,
     }
   },
   mounted() {
@@ -87,6 +102,7 @@ export default {
       })
         this.getSkus(id)
     }
+    this.getGroups()
   },
   methods: {
       updateCate(sku) {
@@ -118,6 +134,7 @@ export default {
             SkuApi.saveOrUpdate({
                 name: value,
                 partsId: this.entity.id,
+                groupId: this.groupId,
                 status: 1
             }).then(res => {
                 if (res.code == 0) {
@@ -133,6 +150,7 @@ export default {
         SkuApi.saveOrUpdate({
             partsId: this.entity.id,
             parentId: this.parentSku.id,
+            groupId: this.groupId,
             name: this.sku.name,
             amount: this.sku.amount,
             id: this.sku.id
@@ -170,8 +188,24 @@ export default {
     },
 
     getSkus(id) {
-        SkuApi.getByParts(id).then(res => {
+        id = id || this.entity.id
+        SkuApi.getByParts(id, this.groupId).then(res => {
             this.tableData = res.content
+            let total = 0
+            res.content.forEach(s => {
+                s.skus.forEach(ss => {
+                    total += ss.amount
+                })
+            })
+            this.total = total
+        })
+    },
+
+    getGroups() {
+        GroupApi.getPage({
+            pageable: 0
+        }).then(res => {
+            this.groups = res.content.records || []
         })
     }
   }
