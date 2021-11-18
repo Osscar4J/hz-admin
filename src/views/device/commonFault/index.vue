@@ -51,12 +51,12 @@
           <span> {{ new Date(scope.row.createTime).Format('yyyy/MM/dd hh:mm') }} </span>
         </template>
       </el-table-column>
-      <el-table-column label="简介" align="left">
+      <el-table-column label="故障描述" align="left">
         <template slot-scope="scope">
           <pre>{{scope.row.description}}</pre>
         </template>
       </el-table-column>
-      <el-table-column label="简介" align="left">
+      <el-table-column label="解决方案" align="left">
         <template slot-scope="scope">
           <pre>{{scope.row.answer}}</pre>
         </template>
