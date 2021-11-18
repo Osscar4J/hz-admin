@@ -2,7 +2,6 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken, setToken, getRefreshToken, getTokenExpired, removeToken, removeRefreshToken } from '@/utils/auth'
-import router from '@/router'
 
 const refreshToken = function() {
   return service({
@@ -12,12 +11,12 @@ const refreshToken = function() {
       refresh: getRefreshToken()
     },
     success: res => {
+      console.log(res)
       if (res.code == 401) {
         removeToken()
         removeRefreshToken()
-        router.push('/')
+        // router.push('/')
       }
-      console.log(res)
     }
   })
 }
@@ -29,10 +28,11 @@ const interceptor = async function(config) {
     // please modify it according to the actual situation
     config.headers['X-Token'] = store.getters.token || getToken()
 
-    if (!config.url.match(/\/auth\/api\/auth\/login/)) {
+    if (!config.url.match(/\/auth\/api\/auth\/login/) && !config.url.match(/\/auth\/api\/auth\/refreshToken/)) {
       const expire = getTokenExpired()
 
       if (new Date().getTime() > expire) {
+        console.log('================ refresh token ================')
         const res = await refreshToken()
         setToken(res.content)
       }

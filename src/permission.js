@@ -254,8 +254,6 @@ router.beforeEach(async(to, from, next) => {
   // // determine whether the user has logged in
   const hasToken = getToken()
 
-  console.log('hasToken: ', hasToken)
-
   if (hasToken) {
     if (to.path === '/login') {
       // if is logged in, redirect to the home page
@@ -264,7 +262,6 @@ router.beforeEach(async(to, from, next) => {
     } else {
       const hasGetUserInfo = store.getters.name
       if (hasGetUserInfo) {
-        console.log('has get userInfo')
         next()
       } else {
         try {
@@ -272,7 +269,7 @@ router.beforeEach(async(to, from, next) => {
           await store.dispatch('user/getInfo')
 
           if (!routerLoaded) {
-            let res = await store.dispatch('user/resetMenus')
+            await store.dispatch('user/resetMenus')
             if (store.getters.menus) {
               router.addRoutes(dynamicRouters)
               dynamicRouters.forEach(r => {
@@ -281,8 +278,6 @@ router.beforeEach(async(to, from, next) => {
             }
             routerLoaded = true
           }
-
-          console.log('get userInfo')
 
           next({ ...to, replace: true })
         } catch (error) {
@@ -299,10 +294,8 @@ router.beforeEach(async(to, from, next) => {
 
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
-      console.log('whiteList go', to)
       next()
     } else {
-      console.log('redirect to login', to)
       // other pages that do not have permission to access are redirected to the login page.
       next(`/login?redirect=${to.path}`)
       NProgress.done()
