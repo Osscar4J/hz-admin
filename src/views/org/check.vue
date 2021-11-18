@@ -87,10 +87,12 @@ export default {
           auth: {
             status: -1
           }
-        }
+        },
+        groups: []
     }
   },
   mounted() {
+    this.$showLoading()
     OrgAPi.getAuthInfo(this.$route.query.id).then(async res => {
       if (res.content.auth) {
         if (res.content.auth.signPic) {
@@ -107,6 +109,7 @@ export default {
         }
       }
       this.entity = res.content
+      this.$hideLoading()
     })
     this.getGroups()
   },

@@ -2,6 +2,9 @@
   <div class="app-container">
     <div>
       <el-form :inline="true" :model="reqvo" class="demo-form-inline" onsubmit="return false">
+        <el-form-item label="名称">
+          <el-input v-model="reqvo.name" placeholder="名称" maxlength="255"></el-input>
+        </el-form-item>
         <el-form-item label="发布状态">
           <el-select v-model="reqvo.status" placeholder="选择发布状态" @change="getPage(1)">
             <el-option label="全部" :value="null" />
@@ -63,6 +66,7 @@
           <span> {{ new Date(scope.row.createTime).Format('yyyy/MM/dd hh:mm') }} </span>
         </template>
       </el-table-column>
+      <el-table-column label="简介" align="left" prop="description"></el-table-column>
       <el-table-column label="操作" align="left">
         <template slot-scope="scope">
           <el-button type="text" icon="el-icon-edit" @click="$router.push('/device/parts/editor?id=' + scope.row.id)">修改</el-button>

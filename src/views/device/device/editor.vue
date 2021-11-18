@@ -18,6 +18,13 @@
         </el-select>
       </el-form-item>
 
+      <el-form-item label="所属分类" required>
+        <el-select v-model="entity.classifyId" placeholder="选择分类">
+          <el-option label="无" value="0" />
+          <el-option v-for="item in classifies" :label="item.name" :value="item.id" :key="item.id" />
+        </el-select>
+      </el-form-item>
+
       <el-form-item label="简介" required>
         <el-input v-model="entity.description" maxlength="255" type="textarea" />
       </el-form-item>
@@ -33,6 +40,7 @@
 <script>
 import DeviceApi from '@/api/device'
 import BrandApi from '@/api/brand'
+import ClassifyApi from '@/api/classify'
 
 export default {
   name: 'deviceEditor',
@@ -41,6 +49,7 @@ export default {
         entity: {
           status: 0
         },
+        classifies: [],
         brands: [],
         selectedBrands: [],
     }
@@ -48,14 +57,17 @@ export default {
   mounted() {
     let id = this.$route.query.id
     if (id) {
+      this.$showLoading()
       DeviceApi.getInfo(id).then(res => {
         this.entity = res.content
         if (this.entity.brands) {
           this.selectedBrands = this.entity.brands.map(b => b.id)
         }
+        this.$hideLoading()
       })
     }
     this.getBrands()
+    this.getClassifies()
   },
   methods: {
     onCancel() {
@@ -77,6 +89,16 @@ export default {
       } else {
         this.$message.error(res.msg)
       }
+    },
+
+    getClassifies() {
+      ClassifyApi.getPage({
+        pageable: 0,
+        type: 3,
+        status: 1
+      }).then(res => {
+        this.classifies = res.content.records || []
+      })
     },
 
     getBrands() {

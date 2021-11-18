@@ -2,6 +2,7 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken, setToken, getRefreshToken, getTokenExpired, removeToken, removeRefreshToken } from '@/utils/auth'
+import Vue from 'vue'
 
 const refreshToken = function() {
   return service({
@@ -101,7 +102,7 @@ service.interceptors.response.use(
       }
       return res // Promise.reject(res.msg || res.message || 'Error')
     } else {
-      if (res.content.records){
+      if (res.content && res.content.records){
         res.content.current = parseInt(res.content.current)
         res.content.pages = parseInt(res.content.pages)
         res.content.size = parseInt(res.content.size)
@@ -117,6 +118,7 @@ service.interceptors.response.use(
       type: 'error',
       duration: 5 * 1000
     })
+    Vue.prototype.$hideLoading()
     return Promise.reject(error)
   }
 )

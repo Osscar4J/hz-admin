@@ -237,6 +237,28 @@ const dynamicRouters = [
           }
         ]
       },
+      {
+        path: 'commonFault',
+        component: () => import('@/views/device/commonFault/layout'),
+        name: 'commonFaults',
+        meta: { title: '常见故障' },
+        children: [
+          {
+            path: '',
+            component: () => import('@/views/device/commonFault/index'),
+            name: 'faultIndex',
+            meta: { title: '常见故障列表' },
+            hidden: true
+          },
+          {
+            path: 'editor',
+            component: () => import('@/views/device/commonFault/editor'),
+            name: 'faultEditor',
+            meta: { title: '编辑故障信息' },
+            hidden: true
+          }
+        ]
+      },
     ]
   },
   { path: '*', redirect: '/404', hidden: true }

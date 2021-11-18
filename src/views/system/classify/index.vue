@@ -10,9 +10,11 @@
           </el-select>
         </el-form-item>
         <el-form-item label="类型">
-          <el-select v-model="reqvo.pos" placeholder="选择类型" @change="getPage(1)">
+          <el-select v-model="reqvo.type" placeholder="选择类型" @change="getPage(1)">
             <el-option label="全部" :value="null" />
             <el-option label="配件" :value="1" />
+            <el-option label="故障" :value="2" />
+            <el-option label="设备" :value="3" />
           </el-select>
         </el-form-item>
         <el-form-item>
@@ -37,6 +39,8 @@
       <el-table-column label="类型" align="center">
         <template slot-scope="scope">
           <div v-if="scope.row.type == 1">配件</div>
+          <div v-else-if="scope.row.type == 2">故障</div>
+          <div v-else-if="scope.row.type == 3">设备</div>
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="发布状态" width="110" align="center">
@@ -52,7 +56,7 @@
       <el-table-column label="操作" align="left">
         <template slot-scope="scope">
           <el-button type="text" icon="el-icon-edit" @click="$router.push('/system/classify/editor?id=' + scope.row.id)">修改</el-button>
-          <el-button type="text" class="text-red" icon="el-icon-delete" @click="removeById(scope.row.id)">删除</el-button>
+          <el-button v-if="scope.row.status == 0" type="text" class="text-red" icon="el-icon-delete" @click="removeById(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>

@@ -61,8 +61,10 @@ export default {
   mounted() {
     let id = this.$route.query.id
     if (id) {
+      this.$showLoading()
       BannerApi.getInfo(id).then(res => {
         this.entity = res.content
+        this.$hideLoading()
       })
     }
   },

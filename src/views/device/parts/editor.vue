@@ -98,6 +98,7 @@ export default {
   mounted() {
     let id = this.$route.query.id
     if (id) {
+      this.$showLoading()
       PartsApi.getInfo(id).then(res => {
         this.entity = res.content
         if (this.entity.covers) {
@@ -106,6 +107,7 @@ export default {
         if (this.entity.brands) {
           this.selectedBrands = this.entity.brands.map(b => b.id)
         }
+        this.$hideLoading()
       })
     }
     this.getClassifies()

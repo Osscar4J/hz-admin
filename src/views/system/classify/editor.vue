@@ -14,6 +14,8 @@
       <el-form-item label="类型" required>
         <el-select v-model="entity.type" placeholder="选择类型">
             <el-option label="配件" :value="1" />
+            <el-option label="故障" :value="2" />
+            <el-option label="设备" :value="3" />
           </el-select>
       </el-form-item>
       <el-form-item label="排序">
@@ -46,8 +48,10 @@ export default {
   mounted() {
     let id = this.$route.query.id
     if (id) {
+      this.$showLoading()
       ClassifyApi.getInfo(id).then(res => {
         this.entity = res.content
+        this.$hideLoading()
       })
     }
   },
