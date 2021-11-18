@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">易维优服后台管理系统</h3>
+        <h3 class="title">信维优服后台管理系统</h3>
       </div>
 
       <el-form-item prop="username">
@@ -44,6 +44,10 @@
       <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
 
     </el-form>
+
+    <div style="text-align: center; position:absolute; bottom:20px; color:#ffffff;text-decoration: underline;width: 100%;">
+      <a href="https://beian.miit.gov.cn" target="_blank">湘ICP备17018261号-1</a>
+    </div>
   </div>
 </template>
 
