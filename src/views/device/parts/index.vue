@@ -51,6 +51,7 @@
           </div>
         </template>
       </el-table-column>
+      <el-table-column align="center" label="浏览量" prop="partsView" width="80"></el-table-column>
       <el-table-column label="所属分类" align="center">
         <template slot-scope="scope">
           <div v-if="scope.row.classify">{{scope.row.classify.name}}</div>

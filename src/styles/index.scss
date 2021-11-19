@@ -163,3 +163,9 @@ div:focus {
 
 .margin-top { margin-top: 15px; }
 .margin-top-s { margin-top: 10px; }
+
+pre {
+  white-space: pre-wrap!important;
+  word-wrap: break-word!important;
+  *white-space:normal!important;
+}

@@ -1,5 +1,22 @@
 <template>
   <div class="app-container">
+    <div>
+      <el-form :inline="true" :model="reqvo" class="demo-form-inline" onsubmit="return false">
+        <el-form-item label="名称">
+          <el-input v-model="reqvo.name" placeholder="名称" maxlength="32"></el-input>
+        </el-form-item>
+        <el-form-item label="手机号">
+          <el-input v-model="reqvo.phone" placeholder="手机号" maxlength="16"></el-input>
+        </el-form-item>
+        <el-form-item label="单位">
+          <el-input v-model="reqvo.orgName" placeholder="输入单位名称关键词" maxlength="16"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="getPage(1)">查询</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
+
     <el-table
       v-loading="dataLoading"
       :data="data.records"
@@ -8,6 +25,13 @@
       fit
       highlight-current-row
     >
+      <el-table-column align="center" label="头像" width="80">
+        <template slot-scope="scope">
+          <div class="cover">
+            <img :src="scope.row.avatar">
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="姓名" width="95">
         <template slot-scope="scope">
           {{ scope.row.name }}
@@ -28,7 +52,12 @@
           <el-tag v-if="scope.row.status == 1">正常</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="创建时间" width="210" align="center">
+      <el-table-column label="单位" align="left">
+        <template slot-scope="scope">
+          <div v-if="scope.row.org">{{scope.row.org.name}}</div>
+        </template>
+      </el-table-column>
+      <el-table-column label="注册时间" width="210" align="center">
         <template slot-scope="scope">
           <span> {{ new Date(scope.row.createTime).Format('yyyy/MM/dd hh:mm') }} </span>
         </template>
@@ -49,7 +78,11 @@ export default {
   name: 'users',
   data() {
     return {
-      reqvo: {current: 1},
+      reqvo: {
+        current: 1,
+        phone: '',
+        orgName: ''
+      },
       data: {},
       dataLoading: true
     }
@@ -62,7 +95,6 @@ export default {
       this.reqvo.current = pageNo || this.reqvo.current
       let res = await UserAPi.getPage(this.reqvo)
       this.dataLoading = false
-      console.log(res)
       this.data = res.content
     }
   }
@@ -70,9 +102,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.dashboard {
-  &-container {
-    margin: 30px;
-  }
+.cover {
+    img {
+        height: 60px;
+    }
 }
 </style>

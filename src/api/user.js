@@ -35,7 +35,7 @@ export default {
     return request({
       url: '/admin/api/user',
       method: 'get',
-      data: data
+      params: data
     })
   },
 }

@@ -147,7 +147,7 @@ export default {
     getClassifies() {
       ClassifyApi.getPage({
         pageable: 0,
-        type: 1,
+        type: 3,
         status: 1
       }).then(res => {
         this.classifies = res.content.records || []
