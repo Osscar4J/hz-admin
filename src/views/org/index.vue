@@ -34,8 +34,10 @@
       </el-table-column>
       <el-table-column align="left" label="管理员" width="160">
         <template slot-scope="scope">
-          <div>姓名：{{ scope.row.manager.name }}</div>
-          <div>电话：{{ scope.row.manager.phone }}</div>
+          <div v-if="scope.row.manager">
+            <div>姓名：{{ scope.row.manager.name }}</div>
+            <div>电话：{{ scope.row.manager.phone }}</div>
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="是否认证" width="140">

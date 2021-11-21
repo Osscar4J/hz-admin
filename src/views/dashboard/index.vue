@@ -17,7 +17,6 @@ export default {
     ])
   },
   mounted() {
-    this.$toast('hello world')
   }
 }
 </script>

@@ -1,3 +1,4 @@
+/* eslint-disable */
 import router from './router'
 import store from './store'
 import { Message } from 'element-ui'
@@ -13,6 +14,17 @@ NProgress.configure({ showSpinner: false }) // NProgress Configuration
 const whiteList = ['/login', '/'] // no redirect whitelist
 
 const dynamicRouters = [
+  {
+    path: '/dashboard',
+    component: Layout,
+    children: [{
+      path: '',
+      name: '控制台',
+      component: () => import('@/views/dashboard/index'),
+      meta: { title: '控制台', icon: 'dashboard' }
+    }]
+  },
+
   {
     path: '/users',
     component: Layout,
@@ -125,6 +137,28 @@ const dynamicRouters = [
             component: () => import('@/views/system/area/editor'),
             name: 'areaEditor',
             meta: { title: '编辑维修站' },
+            hidden: true
+          }
+        ]
+      },
+      {
+        path: 'checkFeePolicy',
+        component: () => import('@/views/system/feePolicy/layout'),
+        name: 'checkFeePolicy',
+        meta: { title: '检测费规则' },
+        children: [
+          {
+            path: '',
+            component: () => import('@/views/system/feePolicy/index'),
+            name: 'checkFeePolicyIndex',
+            meta: { title: '检测费规则列表' },
+            hidden: true
+          },
+          {
+            path: 'editor',
+            component: () => import('@/views/system/feePolicy/editor'),
+            name: 'checkFeePolicyEditor',
+            meta: { title: '编辑检测费规则' },
             hidden: true
           }
         ]
@@ -261,7 +295,7 @@ const dynamicRouters = [
       },
     ]
   },
-  { path: '*', redirect: '/404', hidden: true }
+  
 ]
 
 let routerLoaded = false
@@ -292,9 +326,58 @@ router.beforeEach(async(to, from, next) => {
 
           if (!routerLoaded) {
             await store.dispatch('user/resetMenus')
+            
+            // let tempRouters = dynamicRouters.filter(r => {
+            //   let contains = false
+            //   if (r.children) {
+            //     let c = r.children.filter
+            //   }
+            //   return contains
+            // })
+
+            let menus = store.getters.menus.map(v => {
+              return v.link
+            }).filter(v => !!v)
+
+            let distRouters = []
+            for (let m of dynamicRouters) {
+              console.log(m)
+              if (m.children) {
+                let mc = []
+                for (let mm of m.children) {
+                  if (mm.children) {
+
+                    let mmc = []
+                    for (let mmm of mm.children) {
+                      if (mmm.children) {
+
+                      } else if (menus.indexOf(m.path + '/' + mm.path + (mmm.path ? '/' + mmm.path : '')) > -1 || mmm.hidden) {
+                        mmc.push(mmm)
+                      }
+                    }
+                    if (mmc.length > 0) {
+                      mm.children = mmc
+                      mc.push(mm)
+                    }
+
+                  } else if (menus.indexOf(m.path + (mm.path ? '/' + mm.path : '')) > -1 || mm.hidden) {
+                    mc.push(mm)
+                  }
+                }
+                if (mc.length > 0) {
+                  m.children = mc
+                  distRouters.push(m)
+                }
+              } else if (menus.indexOf(m.path) > -1) {
+                distRouters.push(m)
+              }
+            }
+            // 404 
+            distRouters.push({ path: '*', redirect: '/404', hidden: true })
+
             if (store.getters.menus) {
-              router.addRoutes(dynamicRouters)
-              dynamicRouters.forEach(r => {
+              router.addRoutes(distRouters)
+              distRouters.forEach(r => {
                 router.options.routes.push(r)
               })
             }

@@ -49,18 +49,6 @@ export const constantRoutes = [
     hidden: true
   },
 
-  {
-    path: '/dashboard',
-    component: Layout,
-    children: [{
-      path: '',
-      name: '控制台',
-      component: () => import('@/views/dashboard/index'),
-      meta: { title: '控制台', icon: 'dashboard' }
-    }]
-  },
-
-  
 ]
 
 

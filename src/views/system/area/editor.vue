@@ -50,6 +50,16 @@
           </div>
         </div>
       </el-form-item>
+      <el-form-item label="计费规则" required>
+        <el-select v-model="entity.feePolicyId" placeholder="请选择计费规则">
+          <el-option
+            v-for="item in policyList"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id">
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item label="简介">
         <el-input v-model="entity.description" maxlength="255" type="textarea" placeholder="140字以内" />
       </el-form-item>
@@ -65,6 +75,7 @@
 <script>
 import GroupApi from '@/api/group'
 import CommonApi from '@/api/common'
+import CheckFeePolicyApi from '@/api/checkFeePolicy'
 
 export default {
   name: 'areaEditor',
@@ -84,11 +95,13 @@ export default {
         districts: [],
         province: null,
         city: null,
+        policyList: [], // 计费规则列表
     }
   },
   mounted() {
     let id = this.$route.query.id
     if (id) {
+      this.$showLoading()
       GroupApi.getInfo(id).then(async res => {
         this.entity = res.content
         let areaCode = this.entity.areaCode
@@ -102,9 +115,11 @@ export default {
             this.getAreas(this.province, 'cities')
           }
         }
+        this.$hideLoading()
       })
     }
     this.getAreas()
+    this.getPolicyList()
   },
   methods: {
     onCancel() {
@@ -139,13 +154,26 @@ export default {
         this.$message.error('请输入经纬度')
         return false
       }
+      if (!this.entity.feePolicyId) {
+        this.$message.error('请选择检测费计费规则')
+        return false
+      }
       let res = await GroupApi.saveOrUpdate(this.entity)
       if (res.code == 0){
-        this.$message.success('修改成功')
+        this.$message.success('保存成功')
         this.onCancel()
       } else {
         this.$message.error(res.msg)
       }
+    },
+
+    getPolicyList() {
+      CheckFeePolicyApi.getPage({
+        status: 1,
+        pageable: 0
+      }).then(res => {
+        this.policyList = res.content.records || []
+      })
     }
   }
 }
