@@ -34,13 +34,14 @@
         <template slot-scope="scope">
           <div>
               <div>
-                  路程成本价：<span class="text-red">{{scope.row.roadBasePrice}}</span> 元/公里，售价：<span class="text-red">{{scope.row.roadSellPrice}}</span> 元/公里，含基础路程：<span class="text-blue">{{scope.row.baseDist}}</span> 公里。
+                  路程成本价：<span class="text-red">{{scope.row.roadBasePrice}}</span> 元/公里，<span class="text-blue">{{scope.row.baseDist}}</span> 公里内：<span class="text-red">{{scope.row.roadSellPrice}}</span> 元/公里，
+                  超出后 <span class="text-red">{{scope.row.roadPrice}}</span> 元/公里。
               </div>
               <div>
                   超出 <span class="text-blue">{{scope.row.baseDist}}</span> 公里后，每 <span class="text-blue">{{scope.row.perDist}}</span> 公里增加 <span class="text-green">{{scope.row.stepHour}}</span> 工时。
               </div>
               <div>
-                  工时费成本价： <span class="text-red">{{scope.row.checkBasePrice}}</span> 元/工时，售价： <span class="text-red">{{scope.row.checkSellPrice}}</span> 元/工时，含基础工时： <span class="text-green">{{scope.row.baseHour}}</span> 工时，
+                  工时费成本价： <span class="text-red">{{scope.row.checkBasePrice}}</span> 元/时，<span class="text-green">{{scope.row.baseHour}}</span> 时内 <span class="text-red">{{scope.row.checkSellPrice}}</span> 元/工时，
                   超出后每工时 <span class="text-red">{{scope.row.hourPrice}}</span> 元。
               </div>
           </div>

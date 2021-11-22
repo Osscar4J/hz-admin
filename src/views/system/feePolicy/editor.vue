@@ -15,15 +15,18 @@
         <div class="policy">
             <div>
                 路程成本价：<input type="number" v-model="entity.roadBasePrice" class="el-input__inner"> 元/公里，
+                <input type="number" v-model="entity.baseDist" class="el-input__inner"> 公里内
                 售价：<input type="number" v-model="entity.roadSellPrice" class="el-input__inner"> 元/公里，
-                含基础路程：<input type="number" v-model="entity.baseDist" class="el-input__inner"> 公里。
+                超出后<input type="number" v-model="entity.roadPrice" class="el-input__inner"> 元/公里。
             </div>
             <div>
                 <span v-if="entity.baseDist > 0">超出{{entity.baseDist}}公里后，</span>
                 每 <input type="number" v-model="entity.perDist" class="el-input__inner"> 公里增加 <input type="number" v-model="entity.stepHour" class="el-input__inner"> 工时。
             </div>
             <div>
-                工时费成本价： <input type="number" v-model="entity.checkBasePrice" class="el-input__inner"> 元/工时，售价： <input type="number" v-model="entity.checkSellPrice" class="el-input__inner"> 元/工时，含基础工时： <input type="number" v-model="entity.baseHour" class="el-input__inner"> 工时，
+                工时费成本价： <input type="number" v-model="entity.checkBasePrice" class="el-input__inner"> 元/工时，
+                <input type="number" v-model="entity.baseHour" class="el-input__inner"> 时内
+                售价： <input type="number" v-model="entity.checkSellPrice" class="el-input__inner"> 元/时，
                 超出后每工时 <input type="number" v-model="entity.hourPrice" class="el-input__inner"> 元。
             </div>
         </div>
@@ -52,6 +55,7 @@ export default {
           perDist: 0,
           stepHour: 0,
           baseHour: 0,
+          roadPrice: 0,
           checkBasePrice: 0,
           checkSellPrice: 0,
           hourPrice: 0
