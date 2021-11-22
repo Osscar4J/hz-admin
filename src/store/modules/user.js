@@ -35,7 +35,7 @@ const actions = {
   // user login
   login({ commit }, formData) {
     return new Promise((resolve, reject) => {
-      UserApi.login(formData).then(response => {
+      UserApi.login(formData).then(async response => {
         const { content } = response
         commit('SET_TOKEN', content.accessToken)
         setToken(content.accessToken)

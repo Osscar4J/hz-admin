@@ -114,7 +114,9 @@ export default {
             pwd: this.$md5(this.loginForm.password),
             type: 1
           }).then(() => {
-            this.$router.push({ path: this.redirect || '/dashboard' })
+            this.$store.dispatch('user/getInfo').then(res => {
+              this.$router.push({ path: this.redirect || '/dashboard' })
+            })
           }).catch(() => { this.loading = false })
         } else {
           console.log('error submit!!')

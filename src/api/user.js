@@ -38,4 +38,16 @@ export default {
       params: data
     })
   },
+
+  /**
+   * 注销用户，永久删除
+   * @param {*} id 用户id
+   * @returns 
+   */
+  deleteUserFarewell(id) {
+    return request({
+      url: '/admin/api/user/del/' + id,
+      method: 'delete',
+    })
+  }
 }

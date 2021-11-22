@@ -34,7 +34,10 @@
       </el-table-column>
       <el-table-column align="center" label="姓名" width="95">
         <template slot-scope="scope">
-          {{ scope.row.name }}
+          <span> {{ scope.row.name }} </span>
+          <transition name="el-zoom-in-center">
+            <span v-if="del" class="el-icon-delete text-red f-csp" @click="delUserFarewell(scope.row.id)"></span>
+          </transition>
         </template>
       </el-table-column>
       <el-table-column label="手机号" width="210">
@@ -83,12 +86,30 @@ export default {
         phone: '',
         orgName: ''
       },
+      del: false,
       data: {},
-      dataLoading: true
+      dataLoading: true,
+      catchedKeys: '',
+      delKey: 'deleteuser'
     }
+  },
+  beforeDestroy() {
+    console.log('注销keydown事件')
+    window.document.onkeydown = null
   },
   mounted() {
     this.getPage(1)
+    window.document.onkeydown = e => {
+      this.catchedKeys += e.key
+      if (this.delKey.indexOf(this.catchedKeys) == 0) {
+        if (this.delKey == this.catchedKeys) {
+          this.del = true
+        }
+      } else {
+        this.catchedKeys = ''
+        this.del = false
+      }
+    }
   },
   methods: {
     async getPage(pageNo) {
@@ -96,6 +117,19 @@ export default {
       let res = await UserAPi.getPage(this.reqvo)
       this.dataLoading = false
       this.data = res.content
+    },
+
+    delUserFarewell(id) {
+      this.$confirm('确定删除吗（将删除所有相关数据且无法恢复）？', '提示').then(res => {
+        UserAPi.deleteUserFarewell(id).then(res => {
+          if (res.code == 0) {
+            this.$message.success('删除成功')
+            this.getPage()
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
+      }).catch(res => {})
     }
   }
 }
