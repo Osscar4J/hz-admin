@@ -11,10 +11,20 @@
         <el-form-item label="单位">
           <el-input v-model="reqvo.orgName" placeholder="输入单位名称关键词" maxlength="16"></el-input>
         </el-form-item>
+        <el-form-item label="角色">
+          <el-select v-model="reqvo.roleId" placeholder="选择角色" @change="getPage(1)">
+            <el-option label="全部" :value="null" />
+            <el-option v-for="item in roles" :label="item.name" :value="item.id" :key="item.id" />
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="getPage(1)">查询</el-button>
         </el-form-item>
       </el-form>
+
+      <div class="text-right" style="margin-bottom:15px;">
+        <el-button type="primary" icon="el-icon-plus" @click="$router.push('/users/repairManEditor')">新增维修员</el-button>
+      </div>
     </div>
 
     <el-table
@@ -55,6 +65,13 @@
           <el-tag v-if="scope.row.status == 1">正常</el-tag>
         </template>
       </el-table-column>
+      <el-table-column label="角色" width="210">
+        <template slot-scope="scope">
+          <div v-if="scope.row.roles">
+            <span>{{scope.row.roles.map(v => v.name).join(' / ')}}</span>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="单位" align="left">
         <template slot-scope="scope">
           <div v-if="scope.row.org">{{scope.row.org.name}}</div>
@@ -70,12 +87,21 @@
           {{ scope.row.address }}
         </template>
       </el-table-column>
+      <el-table-column label="操作" align="left">
+        <template slot-scope="scope">
+          <div v-if="isRepairMan(scope.row)">
+            <el-button type="text" icon="el-icon-edit" @click="$router.push('/users/repairManEditor?id=' + scope.row.id)">修改</el-button>
+            <el-button type="text" class="text-red" icon="el-icon-delete" @click="delUserFarewell(scope.row.id)">删除</el-button>
+          </div>
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>
 
 <script>
 import UserAPi from '@/api/user'
+import RoleApi from '@/api/role'
 
 export default {
   name: 'users',
@@ -90,15 +116,16 @@ export default {
       data: {},
       dataLoading: true,
       catchedKeys: '',
-      delKey: 'deleteuser'
+      delKey: 'deleteuser',
+      roles: []
     }
   },
   beforeDestroy() {
-    console.log('注销keydown事件')
     window.document.onkeydown = null
   },
   mounted() {
     this.getPage(1)
+    this.getRoles()
     window.document.onkeydown = e => {
       this.catchedKeys += e.key
       if (this.delKey.indexOf(this.catchedKeys) == 0) {
@@ -120,7 +147,10 @@ export default {
     },
 
     delUserFarewell(id) {
-      this.$confirm('确定删除吗（将删除所有相关数据且无法恢复）？', '提示').then(res => {
+      this.$confirm('确定删除吗（将删除所有相关数据且无法恢复）？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(res => {
         UserAPi.deleteUserFarewell(id).then(res => {
           if (res.code == 0) {
             this.$message.success('删除成功')
@@ -130,6 +160,25 @@ export default {
           }
         })
       }).catch(res => {})
+    },
+
+    isRepairMan(entity) {
+      if (!entity.roles || entity.roles.length == 0)
+        return false
+      for (let role of entity.roles) {
+        if (role.id == 4) {
+          return true
+        }
+      }
+      return false
+    },
+
+    getRoles() {
+      RoleApi.getPage({
+        pageable: 0
+      }).then(res => {
+        this.roles = res.content.records || []
+      })
     }
   }
 }

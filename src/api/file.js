@@ -63,16 +63,19 @@ export default {
 
   getClient() {
 		if (!OSSClient || new Date().getTime()/1000-getTokenTime > EXPIRED) {
-			return this.getSts().then(res => {
-        getTokenTime = new Date().getTime()/1000
-        STSToken = res.content
-        OSSClient = new OSS({
-          region: REGION,
-          accessKeyId: res.content.accessKey,
-          accessKeySecret: res.content.accessKeySecret,
-          stsToken: res.content.securityToken,
-          bucket: BUCKET
-        });
+			return new Promise(resolve => {
+        this.getSts().then(res => {
+          getTokenTime = new Date().getTime()/1000
+          STSToken = res.content
+          OSSClient = new OSS({
+            region: REGION,
+            accessKeyId: res.content.accessKey,
+            accessKeySecret: res.content.accessKeySecret,
+            stsToken: res.content.securityToken,
+            bucket: BUCKET
+          });
+          resolve(OSSClient)
+        })
       })
 		} else {
       return new Promise((resolve, reject) => {

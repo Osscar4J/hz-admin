@@ -34,6 +34,13 @@ const dynamicRouters = [
         name: '用户管理',
         component: () => import('@/views/users/index'),
         meta: { title: '用户管理', icon: 'form' }
+      },
+      {
+        path: 'repairManEditor',
+        name: '编辑维修员',
+        component: () => import('@/views/users/repairManEditor'),
+        meta: { title: '编辑维修员', icon: 'form' },
+        hidden: true
       }
     ]
   },
