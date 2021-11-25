@@ -13,7 +13,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="类型">
-          <el-select v-model="reqvo.pos" placeholder="选择类型" @change="getPage(1)">
+          <el-select v-model="reqvo.type" placeholder="选择类型" @change="getPage(1)">
             <el-option label="全部" :value="null" />
             <el-option label="设备" :value="1" />
             <el-option label="配件" :value="2" />
@@ -91,7 +91,8 @@ export default {
         reqvo: {
             current: 1,
             size: 10,
-            status: null
+            status: null,
+            type: null,
         },
         data: {},
         dataLoading: true

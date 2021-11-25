@@ -49,5 +49,16 @@ export default {
       url: '/admin/api/user/del/' + id,
       method: 'delete',
     })
+  },
+
+  resetPassword(userId, pwd) {
+    return request({
+      url: '/admin/api/user/resetPassword',
+      method: 'put',
+      data: {
+        userId: userId,
+        pwd: pwd
+      }
+    })
   }
 }

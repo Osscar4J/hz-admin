@@ -42,7 +42,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="姓名" width="95">
+      <el-table-column align="center" label="姓名" width="80">
         <template slot-scope="scope">
           <span> {{ scope.row.name }} </span>
           <transition name="el-zoom-in-center">
@@ -50,7 +50,7 @@
           </transition>
         </template>
       </el-table-column>
-      <el-table-column label="手机号" width="210">
+      <el-table-column label="手机号" width="120">
         <template slot-scope="scope">
           {{ scope.row.phone }}
         </template>
@@ -77,7 +77,7 @@
           <div v-if="scope.row.org">{{scope.row.org.name}}</div>
         </template>
       </el-table-column>
-      <el-table-column label="注册时间" width="210" align="center">
+      <el-table-column label="注册时间" width="160" align="center">
         <template slot-scope="scope">
           <span> {{ new Date(scope.row.createTime).Format('yyyy/MM/dd hh:mm') }} </span>
         </template>
@@ -91,6 +91,7 @@
         <template slot-scope="scope">
           <div v-if="isRepairMan(scope.row)">
             <el-button type="text" icon="el-icon-edit" @click="$router.push('/users/repairManEditor?id=' + scope.row.id)">修改</el-button>
+            <el-button type="text" icon="el-icon-warning-outline" @click="resetPwd(scope.row.id)">重置密码</el-button>
             <el-button type="text" class="text-red" icon="el-icon-delete" @click="delUserFarewell(scope.row.id)">删除</el-button>
           </div>
         </template>
@@ -178,6 +179,21 @@ export default {
         pageable: 0
       }).then(res => {
         this.roles = res.content.records || []
+      })
+    },
+
+    resetPwd(userId) {
+      this.$prompt('输入新密码', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(({value}) => {
+        UserAPi.resetPassword(userId, this.$md5(value)).then(res => {
+          if (res.code == 0) {
+            this.$message.success('已重置密码')
+          } else {
+            this.$message.error(res.msg)
+          }
+        })
       })
     }
   }

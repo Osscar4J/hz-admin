@@ -1,6 +1,19 @@
 <template>
   <div class="app-container">
     <el-form ref="form" :model="entity" label-width="120px">
+      <el-form-item label="封面" required>
+        <el-upload
+          class="avatar-uploader"
+          action=""
+          :show-file-list="false"
+          :before-upload="beforeAvatarUpload">
+          <img v-if="entity.cover" :src="entity.cover" class="cover">
+          <i v-else class="el-icon-plus avatar-uploader-icon"></i>
+        </el-upload>
+        <div class="margin-top">
+          <el-progress v-show="percentage > 0 && percentage < 100" :stroke-width="16" :text-inside="true" :percentage="percentage"></el-progress>
+        </div>
+      </el-form-item>
       <el-form-item label="名称" required>
         <el-input v-model="entity.name" maxlength="255" />
       </el-form-item>
@@ -32,6 +45,8 @@
 
 <script>
 import ClassifyApi from '@/api/classify'
+import FileApi from '@/api/file'
+import Constants from '@/constants'
 
 export default {
   name: 'classifyEditor',
@@ -68,7 +83,28 @@ export default {
       } else {
         this.$message.error(res.msg)
       }
-    }
+    },
+
+    beforeAvatarUpload(e) {
+      let fileUrl = 'classify/cover/'+new Date().getTime() + e.name.substr(e.name.indexOf('.'))
+      FileApi.upload({
+        filename: fileUrl,
+        file: e,
+        progress: async (n) => {
+          this.percentage = parseInt(n * 100)
+          if (this.percentage >= 100) {
+            setTimeout(async () => {
+              await FileApi.publicRead(fileUrl)
+              if (this.entity.cover) {
+                FileApi.deleteFile(this.entity.cover)
+              }
+              this.$set(this.entity, 'cover', Constants.OSS_URL + fileUrl)
+            }, 100)
+          }
+        }
+      })
+      return false
+    },
   }
 }
 </script>

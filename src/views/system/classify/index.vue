@@ -34,6 +34,13 @@
       fit
       highlight-current-row
     >
+      <el-table-column align="center" label="封面">
+        <template slot-scope="scope">
+          <div class="cover">
+            <img :src="scope.row.cover">
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column align="center" label="名称" prop="name"></el-table-column>
       <el-table-column label="排序" align="center" prop="sortNo"></el-table-column>
       <el-table-column label="类型" align="center">

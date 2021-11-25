@@ -24,7 +24,7 @@
       <el-form-item label="电话（账号）" required>
         <el-input v-model="entity.phone" maxlength="16" :disabled="!!entity.id" />
       </el-form-item>
-      <el-form-item label="密码">
+      <el-form-item label="密码" v-if="!entity.id">
         <el-input v-model="entity.pwd" type="password" maxlength="16" />
       </el-form-item>
       <el-form-item label="工号">

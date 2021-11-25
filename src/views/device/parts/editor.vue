@@ -163,8 +163,8 @@ export default {
           if (this.percentage >= 100) {
             setTimeout(async () => {
               await FileApi.publicRead(fileUrl)
-              if (this.entity.cover) {
-                FileApi.deleteFile(this.entity.cover)
+              if (this.entity.avatar) {
+                FileApi.deleteFile(this.entity.avatar)
               }
               this.$set(this.entity, 'avatar', Constants.OSS_URL + fileUrl)
             }, 100)
