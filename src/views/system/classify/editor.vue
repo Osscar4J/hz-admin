@@ -31,6 +31,9 @@
             <el-option label="设备" :value="3" />
           </el-select>
       </el-form-item>
+      <el-form-item label="首页展示">
+        <el-switch v-model="showHome" active-color="#13ce66" inactive-color="#cccccc"></el-switch>
+      </el-form-item>
       <el-form-item label="排序">
         <el-input v-model="entity.sortNo" maxlength="12" type="number" />
       </el-form-item>
@@ -57,7 +60,8 @@ export default {
           sortNo: 1,
           status: 0
         },
-        percentage: 0
+        percentage: 0,
+        showHome: false,
     }
   },
   mounted() {
@@ -65,6 +69,7 @@ export default {
     if (id) {
       this.$showLoading()
       ClassifyApi.getInfo(id).then(res => {
+        this.showHome = res.content.showHome == 1
         this.entity = res.content
         this.$hideLoading()
       })
@@ -76,6 +81,7 @@ export default {
     },
 
     async onSubmit() {
+      this.entity.showHome = this.showHome ? 1 : 0
       let res = await ClassifyApi.saveOrUpdate(this.entity)
       if (res.code == 0){
         this.$message.success('修改成功')

@@ -55,6 +55,11 @@
           <el-switch active-color="#13ce66" v-model="scope.row.status" :active-value="1" :inactive-value="0" @change="updateEntity(scope.row)"></el-switch>
         </template>
       </el-table-column>
+      <el-table-column class-name="status-col" label="首页展示" width="110" align="center">
+        <template slot-scope="scope">
+          <el-switch active-color="#13ce66" v-model="scope.row.showHome" :active-value="1" :inactive-value="0" @change="updateEntity(scope.row)"></el-switch>
+        </template>
+      </el-table-column>
       <el-table-column label="创建时间" width="210" align="center">
         <template slot-scope="scope">
           <span> {{ new Date(scope.row.createTime).Format('yyyy/MM/dd hh:mm') }} </span>
