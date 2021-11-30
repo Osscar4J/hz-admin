@@ -97,6 +97,18 @@
         </template>
       </el-table-column>
     </el-table>
+
+    <div class="page">
+        <el-pagination 
+            :current-page="reqvo.current" 
+            background 
+            layout="prev, pager, next" 
+            :total="data.total" 
+            :hide-on-single-page="true" 
+            :page-size="reqvo.size"
+            @current-change="getPage">
+        </el-pagination>
+    </div>
   </div>
 </template>
 
