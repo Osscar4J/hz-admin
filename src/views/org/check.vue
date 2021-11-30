@@ -41,25 +41,30 @@
         </div>
       </el-form-item>
       <el-form-item label="认证资料">
-          <div>
-              <div>认证资料：</div>
-              <div class="auth-images">
-                <viewer :images="entity.auth.files">
-                  <div v-for="item in entity.auth.files" :key="item.id">
-                      <img :src="item.fileUrl" preview-text="" class="f-csp">
-                  </div>
-                </viewer>
+        <div v-if="entity.auth">
+          <div v-if="entity.auth.source == 1">
+            <div>
+                <div>认证资料：</div>
+                <div class="auth-images">
+                  <viewer :images="entity.auth.files">
+                    <div v-for="item in entity.auth.files" :key="item.id">
+                        <img :src="item.fileUrl" preview-text="" class="f-csp">
+                    </div>
+                  </viewer>
+                </div>
+                <div class="clear-both"></div>
+            </div>
+            <div>
+                <div>维保协议：</div>
+              <div v-show="entity.auth.signPic">
+                  <viewer :images="[entity.auth.signPic]">
+                    <img :src="entity.auth.signPic" style="max-height: 150px" class="f-csp">
+                  </viewer>
               </div>
-              <div class="clear-both"></div>
-          </div>
-          <div>
-              <div>维保协议：</div>
-            <div v-show="entity.auth && entity.auth.signPic">
-                <viewer :images="[entity.auth.signPic]">
-                  <img :src="entity.auth.signPic" style="max-height: 150px" class="f-csp">
-                </viewer>
             </div>
           </div>
+          <div v-else> 继承上级单位 </div>
+        </div>
       </el-form-item>
 
       <el-form-item v-if="entity.auth.status == 0">

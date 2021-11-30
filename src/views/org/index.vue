@@ -40,6 +40,13 @@
           </div>
         </template>
       </el-table-column>
+      <el-table-column align="left" label="上级单位" width="160">
+        <template slot-scope="scope">
+          <div v-if="scope.row.parent">
+            <div>{{ scope.row.parent.name }}</div>
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="是否认证" width="140">
         <template slot-scope="scope">
           <span v-if="scope.row.authed == 1" class="color-success">

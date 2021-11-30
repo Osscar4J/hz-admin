@@ -32,6 +32,29 @@
         </div>
       </el-form-item>
 
+      <el-form-item label="是否优惠">
+        <el-switch 
+          active-color="#13ce66" 
+          v-model="isDiscount" 
+          :active-value="true" 
+          :inactive-value="false"></el-switch>
+      </el-form-item>
+
+      <template v-if="isDiscount">
+        <el-form-item label="优惠方式">
+          <el-radio-group v-model="entity.dType">
+            <el-radio :label="1" > 打折 </el-radio>
+            <el-radio :label="2" > 金额 </el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="优惠折扣(%)" v-show="entity.dType == 1">
+          <el-input v-model="entity.discount" maxlength="4" type="number" placeholder="请输入0 - 100之间的数字" />
+        </el-form-item>
+        <el-form-item label="优惠金额" v-show="entity.dType == 2">
+          <el-input v-model="entity.reducedFee" maxlength="4" type="number" placeholder="请输入优惠金额" />
+        </el-form-item>
+      </template>
+
       <el-form-item>
         <el-button type="primary" @click="onSubmit">提交</el-button>
         <el-button @click="onCancel">取消</el-button>
@@ -58,8 +81,11 @@ export default {
           roadPrice: 0,
           checkBasePrice: 0,
           checkSellPrice: 0,
-          hourPrice: 0
+          hourPrice: 0,
+          discount: 100,
+          reducedFee: 0,
         },
+        isDiscount: false, // 是否有优惠
     }
   },
   mounted() {
@@ -68,6 +94,7 @@ export default {
       this.$showLoading()
       CheckFeePolicyApi.getInfo(id).then(res => {
         this.entity = res.content
+        this.isDiscount = this.entity.dType != 0
         this.$hideLoading()
       })
     }
