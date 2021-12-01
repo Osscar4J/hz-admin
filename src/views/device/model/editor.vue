@@ -40,7 +40,7 @@
 
 <script>
 import DeviceModelApi from '@/api/deviceModel'
-import DeviceApi from '@/api/device'
+import ClassifyApi from '@/api/classify'
 import BrandApi from '@/api/brand'
 
 export default {
@@ -99,8 +99,9 @@ export default {
     },
 
     getDevices() {
-      DeviceApi.getPage({
+      ClassifyApi.getPage({
         pageable: 0,
+        type: 3,
         status: 1
       }).then(res => {
         this.devices = res.content.records || []
