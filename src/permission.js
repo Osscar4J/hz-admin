@@ -73,6 +73,26 @@ const dynamicRouters = [
   },
 
   {
+    path: '/order',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: '订单管理',
+        component: () => import('@/views/order/index'),
+        meta: { title: '订单管理', icon: 'form' }
+      },
+      {
+        path: 'editor',
+        name: '订单详情',
+        component: () => import('@/views/order/editor'),
+        meta: { title: '订单详情', icon: 'form' },
+        hidden: true
+      }
+    ]
+  },
+
+  {
     path: '/system',
     component: Layout,
     redirect: '/system/banners',
