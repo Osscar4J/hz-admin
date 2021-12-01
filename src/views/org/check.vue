@@ -18,7 +18,7 @@
         <div>{{entity.address}}</div>
       </el-form-item>
       <el-form-item label="经纬度">
-          <div>{{entity.latitude}} - {{entity.longitude}}</div>
+          <div>{{entity.longitude}} - {{entity.latitude}}</div>
       </el-form-item>
       <el-form-item label="结账周期">
           <div v-if="entity.accountPeriod == 1">一个月</div>
