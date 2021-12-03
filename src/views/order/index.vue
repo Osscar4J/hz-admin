@@ -144,10 +144,10 @@ export default {
     }
   },
   created() {
-    this.getPage(1)
+
   },
   mounted() {
-    
+    this.getPage(1)
   },
   methods: {
     async getPage(pageNo) {

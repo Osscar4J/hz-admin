@@ -235,7 +235,7 @@ const dynamicRouters = [
           {
             path: '',
             component: () => import('@/views/device/parts/index'),
-            name: 'partsIndex',
+            name: 'parts',
             meta: { title: '配件列表', keepAlive: true },
             hidden: true
           },

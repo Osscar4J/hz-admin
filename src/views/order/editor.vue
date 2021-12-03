@@ -63,9 +63,14 @@
                 <div class="clear-both"></div>
             </div>
             <div class="text-gray">配件列表</div>
-            <div class="margin-top-sm" v-if="entity.deviceOrder.parts.length > 0">
+            <div class="margin-top-sm parts-list" v-if="entity.deviceOrder.parts.length > 0">
                 <div class="f-df" v-for="item in entity.deviceOrder.parts" :key="item.id">
-                    <div class="f-flex1">{{item.name}} × {{item.amount}}</div>
+                    <div class="f-flex1 margin-top-sm">
+                      <div>{{item.name}} × {{item.amount}}</div>
+                      <div v-if="item.skus && item.skus.length > 0">
+                        <el-tag type="info" v-for="sku in item.skus" :key="sku.id" size="mini">{{sku.name}}</el-tag>
+                      </div>
+                    </div>
                 </div>
             </div>
             <div v-else class="text-gray">无</div>
@@ -192,6 +197,20 @@ export default {
       height: 100%;
       border-radius: 10px;
     }
+  }
+}
+.parts-list {
+  .f-flex1 {
+    padding: 10px 0;
+    &>div {
+      line-height: 170%;
+      .el-tag {
+        margin-right: 10px;
+      }
+    }
+  }
+  .f-df+.f-df {
+    border-top: 1px solid #f1f1f1;
   }
 }
 </style>

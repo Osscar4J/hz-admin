@@ -2,7 +2,8 @@
   <div class="dashboard-container">
     <div class="dashboard-text">name: {{ name }}</div>
 
-    <el-empty description="描述文字"></el-empty>
+    <el-input v-model="msg"></el-input>
+    <el-empty description="dashboard"></el-empty>
   </div>
 </template>
 
@@ -11,6 +12,11 @@ import { mapGetters } from 'vuex'
 
 export default {
   name: 'Dashboard',
+  data() {
+    return {
+      msg: ''
+    }
+  },
   computed: {
     ...mapGetters([
       'name'
