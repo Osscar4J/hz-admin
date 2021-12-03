@@ -22,6 +22,9 @@
           <el-button type="primary" @click="getPage(1)">查询</el-button>
         </el-form-item>
       </el-form>
+      <div>
+        <el-checkbox v-model="reqvo.isTop" :true-label="1" :false-label="null" @change="getPage(1)">只看置顶</el-checkbox>
+      </div>
     </div>
 
     <div class="text-right" style="margin-bottom:15px;">
@@ -34,6 +37,7 @@
       border
       fit
       highlight-current-row
+      @sort-change="getSortPage"
     >
       <el-table-column align="center" label="封面">
         <template slot-scope="scope">
@@ -51,7 +55,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column align="center" label="浏览量" prop="partsView" width="80"></el-table-column>
+      <el-table-column align="center" label="浏览量" prop="partsView" width="100" sortable="custom"></el-table-column>
       <el-table-column label="所属分类" align="center">
         <template slot-scope="scope">
           <div v-if="scope.row.classify">{{scope.row.classify.name}}</div>
@@ -60,6 +64,11 @@
       <el-table-column class-name="status-col" label="发布状态" width="110" align="center">
         <template slot-scope="scope">
           <el-switch active-color="#13ce66" v-model="scope.row.status" :active-value="1" :inactive-value="0" @change="updateEntity(scope.row)"></el-switch>
+        </template>
+      </el-table-column>
+      <el-table-column class-name="status-col" label="是否置顶" width="110" align="center">
+        <template slot-scope="scope">
+          <el-switch active-color="#13ce66" v-model="scope.row.isTop" :active-value="1" :inactive-value="0" @change="updateTop(scope.row)"></el-switch>
         </template>
       </el-table-column>
       <el-table-column label="创建时间" width="210" align="center">
@@ -105,6 +114,9 @@ export default {
             status: null,
             classifyId: null,
             brandId: null,
+            isTop: null,
+            orderBy: 'id',
+            order: 'desc',
         },
         data: {},
         dataLoading: true,
@@ -121,6 +133,31 @@ export default {
       let res = await PartsApi.getPage(this.reqvo)
       this.dataLoading = false
       this.data = res.content
+    },
+
+    getSortPage(e) {
+      if (e.order) {
+        this.reqvo.orderBy = e.prop
+        this.reqvo.order = e.order == 'descending' ? 'desc' : 'asc'
+      } else {
+        this.reqvo.orderBy = null
+        this.reqvo.order = null
+      }
+      this.getPage(1)
+      return false
+    },
+
+    updateTop(entity) {
+      PartsApi.saveOrUpdate({
+          id: entity.id,
+          isTop: entity.isTop
+      }).then(res => {
+          if (res.code != 0) {
+              this.$message.error(res.msg)
+          } else {
+              this.$message.success('更新成功')
+          }
+      })
     },
 
     updateEntity(entity) {

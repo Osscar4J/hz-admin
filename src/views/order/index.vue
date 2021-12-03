@@ -143,8 +143,11 @@ export default {
         dataLoading: true
     }
   },
-  mounted() {
+  created() {
     this.getPage(1)
+  },
+  mounted() {
+    
   },
   methods: {
     async getPage(pageNo) {

@@ -24,6 +24,13 @@
           :active-value="1" 
           :inactive-value="0"></el-switch>
       </el-form-item>
+      <el-form-item label="是否置顶">
+        <el-switch 
+          active-color="#13ce66" 
+          v-model="entity.isTop" 
+          :active-value="1" 
+          :inactive-value="0"></el-switch>
+      </el-form-item>
       <el-form-item label="成本价" required>
         <el-input v-model="entity.basePrice" maxlength="32" type="number" />
       </el-form-item>

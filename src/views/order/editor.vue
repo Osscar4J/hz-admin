@@ -34,11 +34,11 @@
       </el-form-item>
 
       <el-form-item label="维修员">
-        <div v-if="entity.deviceOrder.repairUserId != 0">
+        <div v-if="entity.deviceOrder && entity.deviceOrder.repairUserId != 0">
             <span>{{entity.deviceOrder.repairUserName}}（{{entity.deviceOrder.repairUserPhone}}）</span>
         </div>
         <div>
-            <el-button type="success" size="mini">更换维修员</el-button>
+            <el-button type="success" size="mini" @click="repairMenVisible = true">更换维修员</el-button>
         </div>
       </el-form-item>
 
@@ -77,11 +77,41 @@
       </el-form-item>
 
     </el-form>
+
+    <el-dialog title="选择维修员" :visible.sync="repairMenVisible">
+      <el-table :data="repairMen">
+        <el-table-column property="date" label="头像" width="150">
+          <template slot-scope="scope">
+            <div class="cover">
+              <img :src="scope.row.avatar" style="width: 60px; max-height: 100px">
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column property="name" label="姓名" width="200"></el-table-column>
+        <el-table-column property="phone" label="电话"></el-table-column>
+        <el-table-column label="状态">
+          <template slot-scope="scope">
+            <div>
+              <el-tag v-if="scope.row.workStatus == 0" size="small" type="success">空闲</el-tag>
+              <el-tag v-else-if="scope.row.workStatus == 1" size="small" type="danger">忙碌</el-tag>
+            </div>
+          </template>
+        </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <div>
+              <el-button v-if="entity.deviceOrder && entity.deviceOrder.repairUserId != scope.row.id" type="text" @click="changeRepairMan(scope.row)">选择</el-button>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import OrderAPi from '@/api/order'
+import RepairManApi from '@/api/repairMan'
 
 export default {
   name: 'orderEditor',
@@ -90,18 +120,25 @@ export default {
         entity: {},
         images: [],
         videos: [],
+        repairMenVisible: false,
+        repairMen: []
     }
   },
   mounted() {
-    OrderAPi.getInfo(this.$route.query.id).then(res => {
-        if (res.content.deviceOrder) {
-            this.images = res.content.deviceOrder.files.filter(f => f.type == 1)
-            this.videos = res.content.deviceOrder.files.filter(f => f.type == 2)
-        }
-        this.entity = res.content
-    })
+    this.getInfo()
   },
   methods: {
+    getInfo() {
+      OrderAPi.getInfo(this.$route.query.id).then(res => {
+          if (res.content.deviceOrder) {
+              this.images = res.content.deviceOrder.files.filter(f => f.type == 1)
+              this.videos = res.content.deviceOrder.files.filter(f => f.type == 2)
+          }
+          this.entity = res.content
+          this.getRepairMen(this.entity.groupId)
+      })
+    },
+
     onCancel() {
       this.$router.back()
     },
@@ -115,6 +152,31 @@ export default {
         this.$message.error(res.msg)
       }
     },
+
+    changeRepairMan(repairMan) {
+      this.$confirm('确定要更换为 ' + repairMan.name + ' 吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
+      }).then(async value => {
+        let res = await OrderAPi.changeRepairMan(this.entity.id, repairMan.id)
+        if (res.code == 0) {
+          this.repairMenVisible = false
+          this.$message.success('已更换维修员')
+          this.getInfo()
+        } else {
+          this.$message.error(res.msg)
+        }
+      })
+    },
+
+    getRepairMen(groupId) {
+      RepairManApi.getPage({
+        pageable: 0,
+        groupId: groupId,
+      }).then(res => {
+        this.repairMen = (res.content.records || []).filter(v => v.id != this.entity.deviceOrder.repairUserId)
+      })
+    }
   }
 }
 </script>

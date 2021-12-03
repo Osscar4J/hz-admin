@@ -80,7 +80,7 @@ const dynamicRouters = [
         path: 'index',
         name: '订单管理',
         component: () => import('@/views/order/index'),
-        meta: { title: '订单管理', icon: 'form' }
+        meta: { title: '订单管理', icon: 'form', keepAlive: true }
       },
       {
         path: 'editor',
@@ -200,20 +200,21 @@ const dynamicRouters = [
     name: 'Device',
     meta: {
       title: '设备管理',
-      icon: 'nested'
+      icon: 'nested',
+      keepAlive: true
     },
     children: [
       {
         path: 'device',
         component: () => import('@/views/device/device/layout'),
         name: 'Devices',
-        meta: { title: '设备管理' },
+        meta: { title: '设备管理', keepAlive: true },
         children: [
           {
             path: '',
             component: () => import('@/views/device/device/index'),
             name: 'deviceIndex',
-            meta: { title: '设备列表' },
+            meta: { title: '设备列表', keepAlive: true },
             hidden: true
           },
           {
@@ -229,13 +230,13 @@ const dynamicRouters = [
         path: 'parts',
         component: () => import('@/views/device/parts/layout'),
         name: 'Parts',
-        meta: { title: '配件管理' },
+        meta: { title: '配件管理', keepAlive: true },
         children: [
           {
             path: '',
             component: () => import('@/views/device/parts/index'),
             name: 'partsIndex',
-            meta: { title: '配件列表' },
+            meta: { title: '配件列表', keepAlive: true },
             hidden: true
           },
           {
@@ -258,13 +259,13 @@ const dynamicRouters = [
         path: 'brand',
         component: () => import('@/views/device/brand/layout'),
         name: 'Brands',
-        meta: { title: '品牌管理' },
+        meta: { title: '品牌管理', keepAlive: true },
         children: [
           {
             path: '',
             component: () => import('@/views/device/brand/index'),
             name: 'brandIndex',
-            meta: { title: '品牌列表' },
+            meta: { title: '品牌列表', keepAlive: true },
             hidden: true
           },
           {
@@ -280,13 +281,13 @@ const dynamicRouters = [
         path: 'model',
         component: () => import('@/views/device/model/layout'),
         name: 'models',
-        meta: { title: '型号管理' },
+        meta: { title: '型号管理', keepAlive: true },
         children: [
           {
             path: '',
             component: () => import('@/views/device/model/index'),
             name: 'modelIndex',
-            meta: { title: '型号列表' },
+            meta: { title: '型号列表', keepAlive: true },
             hidden: true
           },
           {
@@ -302,13 +303,13 @@ const dynamicRouters = [
         path: 'commonFault',
         component: () => import('@/views/device/commonFault/layout'),
         name: 'commonFaults',
-        meta: { title: '常见故障' },
+        meta: { title: '常见故障', keepAlive: true },
         children: [
           {
             path: '',
             component: () => import('@/views/device/commonFault/index'),
             name: 'faultIndex',
-            meta: { title: '常见故障列表' },
+            meta: { title: '常见故障列表', keepAlive: true },
             hidden: true
           },
           {

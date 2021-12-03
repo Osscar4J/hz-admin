@@ -17,4 +17,15 @@ export default {
       method: 'get',
     })
   },
+
+  changeRepairMan(orderId, repairManId) {
+    return request({
+      url: baseApi + '/changeRepairMan',
+      method: 'put',
+      data: {
+        orderId: orderId,
+        repairUserId: repairManId
+      }
+    })
+  },
 }
