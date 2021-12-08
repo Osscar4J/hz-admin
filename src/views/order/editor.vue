@@ -70,6 +70,15 @@
                       <div v-if="item.skus && item.skus.length > 0">
                         <el-tag type="info" v-for="sku in item.skus" :key="sku.id" size="mini">{{sku.name}}</el-tag>
                       </div>
+                      <div>
+                        <span class="text-gray" style="font-size:12px;">单价：</span>
+                        <span class="text-green">￥{{item.price}} <span v-if="item.priceType == 2" class="text-red">（面议）</span> </span>
+                      </div>
+                      <div v-if="item.priceType == 2">
+                        <div class="text-gray" v-if="item.priceContent">
+                          <pre style="margin:0;">{{item.priceContent}}</pre>
+                        </div>
+                      </div>
                     </div>
                 </div>
             </div>

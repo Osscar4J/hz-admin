@@ -50,7 +50,8 @@
       <el-table-column label="价格" align="left" width="120">
         <template slot-scope="scope">
           <div>
-            <div :class="{ 'text-green': scope.row.sellPrice > scope.row.basePrice, 'text-red': scope.row.sellPrice < scope.row.basePrice }">销售价：{{scope.row.sellPrice}}</div>
+            <div v-if="scope.row.priceType==1" :class="{ 'text-green': scope.row.sellPrice > scope.row.basePrice, 'text-red': scope.row.sellPrice < scope.row.basePrice }">销售价：{{scope.row.sellPrice}}</div>
+            <div v-else class="text-blue">销售价：面议</div>
             <div>成本价：{{scope.row.basePrice}}</div>
           </div>
         </template>
@@ -142,7 +143,11 @@
           <el-form-item label="成本价" required>
             <el-input v-model="entity.basePrice" maxlength="32" type="number" />
           </el-form-item>
-          <el-form-item label="销售价" required>
+          <el-form-item label="价格类型" required>
+            <el-radio v-model="entity.priceType" :label="1">固定金额</el-radio>
+            <el-radio v-model="entity.priceType" :label="2">面议</el-radio>
+          </el-form-item>
+          <el-form-item label="销售价" required v-if="entity.priceType == 1">
             <el-input v-model="entity.sellPrice" maxlength="32" type="number" />
           </el-form-item>
           <el-form-item label="所属分类" required>
@@ -339,7 +344,7 @@ export default {
           this.editorVisible = true
         })
       } else { // 新增
-        this.entity = {}
+        this.entity = {priceType: 1}
         this.editorVisible = true
       }
     },
