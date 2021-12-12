@@ -73,26 +73,6 @@ const dynamicRouters = [
   },
 
   {
-    path: '/order',
-    component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: '订单管理',
-        component: () => import('@/views/order/index'),
-        meta: { title: '订单管理', icon: 'form', keepAlive: true }
-      },
-      {
-        path: 'editor',
-        name: '订单详情',
-        component: () => import('@/views/order/editor'),
-        meta: { title: '订单详情', icon: 'form' },
-        hidden: true
-      }
-    ]
-  },
-
-  {
     path: '/system',
     component: Layout,
     redirect: '/system/banners',
@@ -319,6 +299,35 @@ const dynamicRouters = [
             meta: { title: '编辑故障信息' },
             hidden: true
           }
+        ]
+      },
+    ]
+  },
+
+  {
+    path: '/order',
+    component: Layout,
+    redirect: '/order/order/index',
+    name: 'Order',
+    meta: {
+      title: '订单管理',
+      icon: 'nested',
+      keepAlive: true
+    },
+    children: [
+      {
+        path: 'order',
+        component: () => import('@/views/device/device/layout'),
+        name: 'Orders',
+        meta: { title: '订单管理', keepAlive: true },
+        children: [
+          {
+            path: '',
+            component: () => import('@/views/order/order/index'),
+            name: 'orderIndex',
+            meta: { title: '订单列表', keepAlive: true },
+            hidden: true
+          },
         ]
       },
     ]
