@@ -161,8 +161,10 @@ div:focus {
 .text-center { text-align: center; }
 .clear-both { clear: both; }
 
+.margin-bottom { margin-bottom: 15px; }
+.margin-bottom-sm { margin-bottom: 10px; }
 .margin-top { margin-top: 15px; }
-.margin-top-s { margin-top: 10px; }
+.margin-top-s,.margin-top-sm { margin-top: 10px; }
 
 pre {
   white-space: pre-wrap!important;

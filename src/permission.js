@@ -330,6 +330,21 @@ const dynamicRouters = [
           },
         ]
       },
+      {
+        path: 'bill',
+        component: () => import('@/views/device/device/layout'),
+        name: 'bills',
+        meta: { title: '账单管理', keepAlive: true },
+        children: [
+          {
+            path: '',
+            component: () => import('@/views/order/bill/index'),
+            name: 'billIndex',
+            meta: { title: '账单列表', keepAlive: true },
+            hidden: true
+          },
+        ]
+      },
     ]
   },
   
