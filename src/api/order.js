@@ -11,6 +11,14 @@ export default {
     })
   },
 
+  getBillPage(data) {
+    return request({
+      url: baseApi + '/orders2bill',
+      method: 'get',
+      params: data
+    })
+  },
+
   getInfo(id) {
     return request({
       url: baseApi + '/info/' + id,

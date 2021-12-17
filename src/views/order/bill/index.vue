@@ -54,7 +54,7 @@
       </el-table-column>
       <el-table-column label="操作" align="left">
         <template slot-scope="scope">
-          <el-button type="text" @click="showDetail(scope.row)">详情</el-button>
+          <el-button type="text" @click="showBills(scope.row)">详情</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -94,8 +94,21 @@
             <el-input type="textarea" :rows="2" placeholder="请输入备注内容" v-model="billDesc"></el-input>
           </div>
         </div>
+        <div class="margin-bottom-sm">
+          <span>总订单数：</span> <span class="text-blue f-fs18">{{totalOrders}}</span>
+        </div>
+        <div class="margin-bottom-sm">
+          <span> 未确认订单数：</span> <span class="text-red f-fs18">{{notConfirmedOrders}}</span>
+        </div>
+        <div class="margin-bottom-sm">
+          <span>订单总额：</span> <span class="text-green f-fs18">￥{{orderData.totalFee}}</span>
+        </div>
         <div class="margin-bottom-sm text-center">
           <el-button type="primary" style="min-width:140px;" @click="takeBill">结 账</el-button>
+        </div>
+
+        <div class="margin-top-sm text-gray">
+          订单列表
         </div>
         <el-table
           v-loading="ordersLoading"
@@ -149,6 +162,7 @@
             <template slot-scope="scope">
               <el-tag v-if="scope.row.hasBill == 0">未结账</el-tag>
               <el-tag v-else-if="scope.row.hasBill == 1" type="success">已结账</el-tag>
+              <i v-if="scope.row.confirmed == 0" class="el-icon-warning text-red" title="未确认"></i>
             </template>
           </el-table-column>
           <el-table-column label="提交时间" width="140" align="center">
@@ -172,6 +186,55 @@
                 :hide-on-single-page="true" 
                 :page-size="orderReqvo.size"
                 @current-change="getOrderPage">
+            </el-pagination>
+        </div>
+      </div>
+    </el-dialog>
+
+    <el-dialog title="账单明细" :visible.sync="billsVisible" width="70%">
+      <div>
+        <el-table
+          v-loading="billsLoading"
+          :data="billsData.records"
+          element-loading-text="Loading"
+          border
+          fit
+          highlight-current-row
+        >
+          <el-table-column align="center" label="名称">
+            <template slot-scope="scope">
+                <i v-if="scope.row.type == 1" class="el-icon-s-cooperation text-blue" title="维修"></i>
+                {{ scope.row.name }}
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="总金额" width="80">
+              <template slot-scope="scope">
+                ￥{{ scope.row.totalFee }}
+              </template>
+          </el-table-column>
+          <el-table-column align="center" label="提交人" width="120" prop="userName"></el-table-column>
+          <el-table-column align="center" label="单位" prop="orgName"></el-table-column>
+          <el-table-column label="订单提交时间" width="140" align="center">
+            <template slot-scope="scope">
+              <span> {{ new Date(scope.row.orderCommitTime).Format('yyyy/MM/dd hh:mm') }} </span>
+            </template>
+          </el-table-column>
+          <el-table-column label="问题描述" align="left">
+            <template slot-scope="scope">
+              <pre v-if="scope.row.deviceOrder">{{scope.row.deviceOrder.description}}</pre>
+            </template>
+          </el-table-column>
+        </el-table>
+        
+        <div class="page">
+            <el-pagination 
+                :current-page="billsReqvo.current" 
+                background 
+                layout="prev, pager, next" 
+                :total="billsData.total" 
+                :hide-on-single-page="true" 
+                :page-size="billsReqvo.size"
+                @current-change="getBillsPage">
             </el-pagination>
         </div>
       </div>
@@ -202,12 +265,24 @@ export default {
         orderReqvo: {
           current: 1,
           size: 10,
-          confirmed: 1
+          status: 3
         },
         orderData: {},
         ordersLoading: false,
         billPeriod: null,
         billDesc: '', // 结账时的备注
+
+        notConfirmedOrders: 0, // 未确认订单数量
+        totalOrders: 0, // 总订单数
+
+        billsVisible: false, // 账单明细
+        billsReqvo: {
+          current: 1,
+          size: 10,
+          status: 3
+        },
+        billsData: {},
+        billsLoading: false,
     }
   },
   watch: {
@@ -253,21 +328,41 @@ export default {
     async getOrderPage(page) {
       this.orderReqvo.current = page || this.orderReqvo.current
       this.ordersLoading = true
-      let res = await OrderApi.getPage(this.orderReqvo)
+      let res = await OrderApi.getBillPage(this.orderReqvo)
       this.orderData = res.content
+      if (page == 1) {
+        this.notConfirmedOrders = res.content.notConfirmed
+        this.totalOrders = res.content.total
+      }
       this.ordersLoading = false
+    },
+
+    showBills(entity) {
+      this.entity = entity
+      this.billsVisible = true
+      this.getBillsPage(1)
+    },
+
+    // 账单明细列表
+    async getBillsPage(page) {
+      this.billsReqvo.current = page || this.billsReqvo.current
+      this.billsReqvo.mainId = this.entity.id
+      this.billsLoading = true
+      let res = await BillMainApi.getBillPage(this.billsReqvo)
+      this.billsData = res.content
+      this.billsLoading = false
     },
 
     // 结账
     takeBill() {
+      if (this.orderData.total == 0) {
+        this.$message.warning('没有可以结账的订单')
+        return false
+      }
       this.$confirm('确定结账吗？', '提示', {
         cancelButtonText: '取消',
         confirmButtonText: '确定'
       }).then(v => {
-        if (this.orderData.total == 0) {
-          this.$message.warning('没有可以结账的订单')
-          return false
-        }
         BillMainApi.save({
           orgId: this.orderReqvo.orgId,
           startTime: this.orderReqvo.startTime,
