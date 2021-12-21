@@ -169,6 +169,21 @@ const dynamicRouters = [
             hidden: true
           }
         ]
+      },
+      {
+        path: 'settings',
+        component: () => import('@/views/system/system/layout'),
+        name: 'settings',
+        meta: { title: '系统配置' },
+        children: [
+          {
+            path: '',
+            component: () => import('@/views/system/system/index'),
+            name: 'settingsIndex',
+            meta: { title: '系统配置' },
+            hidden: true
+          }
+        ]
       }
     ]
   },
