@@ -171,3 +171,7 @@ pre {
   word-wrap: break-word!important;
   *white-space:normal!important;
 }
+
+.viewer-container {
+  z-index: 9999999 !important;
+}

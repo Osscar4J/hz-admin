@@ -121,6 +121,7 @@
           <el-table-column align="center" label="名称">
             <template slot-scope="scope">
                 <i v-if="scope.row.type == 1" class="el-icon-s-cooperation text-blue" title="维修"></i>
+                <i v-else-if="scope.row.type == 2" class="el-icon-goods text-red" title="配件"></i>
                 {{ scope.row.name }}
             </template>
           </el-table-column>
@@ -206,6 +207,12 @@
                 <i v-if="scope.row.type == 1" class="el-icon-s-cooperation text-blue" title="维修"></i>
                 {{ scope.row.name }}
             </template>
+          </el-table-column>
+          <el-table-column align="center" label="类型" width="80">
+              <template slot-scope="scope">
+                <div v-if="scope.row.orderType == 1" class="text-blue">维修</div>
+                <div v-else-if="scope.row.orderType == 2" class="text-red">配件</div>
+              </template>
           </el-table-column>
           <el-table-column align="center" label="总金额" width="80">
               <template slot-scope="scope">

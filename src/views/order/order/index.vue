@@ -44,6 +44,7 @@
       <el-table-column align="center" label="名称">
         <template slot-scope="scope">
             <i v-if="scope.row.type == 1" class="el-icon-s-cooperation text-blue" title="维修"></i>
+            <i v-else-if="scope.row.type == 2" class="el-icon-goods text-red" title="配件"></i>
             {{ scope.row.name }}
         </template>
       </el-table-column>
@@ -154,7 +155,10 @@
         <el-form-item label="实付金额">
           <div>￥{{entity.fee}}</div>
         </el-form-item>
-        <el-form-item label="上门费">
+        <el-form-item label="上门费" v-if="entity.type == 1">
+          <div>￥{{entity.checkFee}}</div>
+        </el-form-item>
+        <el-form-item label="配送费" v-else-if="entity.type == 2">
           <div>￥{{entity.checkFee}}</div>
         </el-form-item>
 
@@ -167,12 +171,12 @@
           </div>
         </el-form-item>
 
-        <el-form-item label="问题描述">
+        <el-form-item label="问题描述" v-if="entity.type == 1">
             <div v-if="entity.deviceOrder">
               <div>{{entity.deviceOrder.description || '暂无描述'}}</div>
               <div>
                   <div class="auth-images">
-                    <viewer :images="images" :zIndex="9999999">
+                    <viewer :images="images" :zIndex="999999">
                       <div v-for="item in images" :key="item.id">
                           <img :src="item.fileUrl" preview-text="" class="f-csp">
                       </div>
@@ -188,9 +192,9 @@
                   <div class="clear-both"></div>
               </div>
               <div class="text-gray">配件列表</div>
-              <div class="margin-top-sm parts-list" v-if="entity.deviceOrder.parts.length > 0">
+              <div class="parts-list" v-if="entity.deviceOrder.parts.length > 0">
                   <div class="f-df" v-for="item in entity.deviceOrder.parts" :key="item.id">
-                      <div class="f-flex1 margin-top-sm">
+                      <div class="f-flex1">
                         <div>{{item.name}} × {{item.amount}}</div>
                         <div v-if="item.skus && item.skus.length > 0">
                           <el-tag type="info" v-for="sku in item.skus" :key="sku.id" size="mini">{{sku.name}}</el-tag>
@@ -210,6 +214,33 @@
               <div v-else class="text-gray">无</div>
             </div>
         </el-form-item>
+        <el-form-item label="备注" v-else-if="entity.type == 2">
+            <div v-if="entity.deviceOrder">
+              <div>{{entity.deviceOrder.description || '暂无'}}</div>
+              <div class="text-gray">配件列表</div>
+              <div class="parts-list" v-if="entity.deviceOrder.parts.length > 0">
+                  <div class="f-df" v-for="item in entity.deviceOrder.parts" :key="item.id">
+                      <div class="f-flex1">
+                        <div>{{item.name}} × {{item.amount}}</div>
+                        <div v-if="item.skus && item.skus.length > 0">
+                          <el-tag type="info" v-for="sku in item.skus" :key="sku.id" size="mini">{{sku.name}}</el-tag>
+                        </div>
+                        <div>
+                          <span class="text-gray" style="font-size:12px;">单价：</span>
+                          <span class="text-green">￥{{item.price}} <span v-if="item.priceType == 2" class="text-red">（面议）</span> </span>
+                        </div>
+                        <div v-if="item.priceType == 2">
+                          <div class="text-gray" v-if="item.priceContent">
+                            <pre style="margin:0;">{{item.priceContent}}</pre>
+                          </div>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+              <div v-else class="text-gray">无</div>
+            </div>
+        </el-form-item>
+
       </el-form>
     </el-dialog>
 
